@@ -8,3 +8,5 @@ sphinxcontrib-apidoc>=0.2.0  # BSD
 pyzmq>=25.0.0
 furo
 dnspython
+greenlet
+psycopg2
