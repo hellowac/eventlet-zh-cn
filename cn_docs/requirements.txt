@@ -11,3 +11,4 @@ dnspython
 greenlet
 psycopg2
 sphinx-inline-tabs
+sphinx-copybutton
