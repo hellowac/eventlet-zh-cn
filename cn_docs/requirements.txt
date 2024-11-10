@@ -10,3 +10,4 @@ furo
 dnspython
 greenlet
 psycopg2
+sphinx-inline-tabs
