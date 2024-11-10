@@ -1,8 +1,15 @@
 :mod:`eventlet.green.zmq` -- ØMQ support
 ========================================
 
-:mod:`pyzmq <zmq>` [1]_ is a python binding to the C++ ØMQ [2]_ library written in Cython [3]_.
-:mod:`eventlet.green.zmq` is greenthread aware version of `pyzmq`.
+.. tab:: 中文
+
+    :mod:`pyzmq <zmq>` [1]_ 是一个用 Cython [3]_ 编写的与 C++ ØMQ [2]_ 库绑定的 Python 库。
+    :mod:`eventlet.green.zmq` 是 `pyzmq` 的 greenthread 感知版本。
+
+.. tab:: 英文
+
+    :mod:`pyzmq <zmq>` [1]_ is a python binding to the C++ ØMQ [2]_ library written in Cython [3]_.
+    :mod:`eventlet.green.zmq` is greenthread aware version of `pyzmq`.
 
 .. automodule:: eventlet.green.zmq
     :show-inheritance:

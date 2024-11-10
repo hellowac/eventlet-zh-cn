@@ -145,3 +145,16 @@ Asyncio Hub 和函数
 
     - :ref:`awaitlet_alternative`
     - :ref:`manage-your-deprecations`
+
+迁移参考
+=========
+
+
+.. toctree::
+   :maxdepth: 2
+
+   compatibility
+   migration
+   guide/awaitlet
+   guide/deprecation
+   guide/glossary
