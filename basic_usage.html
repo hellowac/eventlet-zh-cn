@@ -1,0 +1,785 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" /><link rel="next" title="设计模式" href="design_patterns.html" /><link rel="prev" title="术语" href="asyncio/guide/glossary.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>基本用法 - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="asyncio/index.html">Eventlet 中的 Asyncio</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncio/compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncio/migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncio/guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncio/guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncio/guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment.html">环境变量</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">模块参考</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/basic_usage.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/basic_usage.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="id1">
+<h1>基本用法<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<p><strong>Basic Usage</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<p>如果您是第一次使用 Eventlet，可以参考 <a class="reference internal" href="design_patterns.html#design-patterns"><span class="std std-ref">设计模式</span></a> 文档中的示例，这些示例是很好的入门资源。</p>
+<p>Eventlet 是围绕绿色线程（即协程，我们可以互换使用这两个术语）概念构建的，用于执行与网络相关的工作。绿色线程与普通线程有以下两个主要区别：</p>
+<ul class="simple">
+<li><p>绿色线程非常轻量，几乎可以认为是免费的。您不需要像普通线程那样节约使用绿色线程。一般来说，每个网络连接至少会有一个绿色线程。</p></li>
+<li><p>绿色线程通过协作方式相互让步，而不是被抢占式调度。这种行为的主要优势在于共享数据结构不需要锁，因为只有显式调用让步时，其他绿色线程才能访问该数据结构。此外，还可以检查队列等原语，查看它们是否有待处理的数据。</p></li>
+</ul>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<p>If it's your first time to Eventlet, you may find the illuminated examples in the <a class="reference internal" href="design_patterns.html#design-patterns"><span class="std std-ref">设计模式</span></a> document to be a good starting point.</p>
+<p>Eventlet is built around the concept of green threads (i.e. coroutines, we use the terms interchangeably) that are launched to do network-related work.  Green threads differ from normal threads in two main ways:</p>
+<ul class="simple">
+<li><p>Green threads are so cheap they are nearly free.  You do not have to conserve green threads like you would normal threads.  In general, there will be at least one green thread per network connection.</p></li>
+<li><p>Green threads cooperatively yield to each other instead of preemptively being scheduled.  The major advantage from this behavior is that shared data structures don't need locks, because only if a yield is explicitly called can another green thread have access to the data structure.  It is also possible to inspect primitives such as queues to see if they have any pending data.</p></li>
+</ul>
+</div>
+</div>
+<section id="api">
+<h2>主要 API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<p><strong>Primary API</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">中文</label><div class="tab-content docutils container">
+<p>Eventlet API 的设计目标是简洁和可读性。您应该能够阅读它的代码并理解其执行过程。我们偏向于使用较少的代码行，而不是过于巧妙的实现。 <a class="reference external" href="http://www.python.org/dev/peps/pep-0020/">就像 Python 本身</a> ，在 Eventlet 中应该有一种且唯一明显的实现方式！</p>
+<p>尽管 Eventlet 包含许多模块，但大多数常用功能可以简单地通过 <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">eventlet</span></code> 访问。以下是 <code class="docutils literal notranslate"><span class="pre">eventlet</span></code> 模块中可用功能的简要概述，并提供了每个功能的详细文档链接。</p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">英文</label><div class="tab-content docutils container">
+<p>The design goal for Eventlet's API is simplicity and readability.  You should be able to read its code and understand what it's doing.  Fewer lines of code are preferred over excessively clever implementations.  <a class="reference external" href="http://www.python.org/dev/peps/pep-0020/">Like Python itself</a>, there should be one, and only one obvious way to do it in Eventlet!</p>
+<p>Though Eventlet has many modules, much of the most-used stuff is accessible simply by doing <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">eventlet</span></code>.  Here's a quick summary of the functionality available in the <code class="docutils literal notranslate"><span class="pre">eventlet</span></code> module, with links to more verbose documentation on each.</p>
+</div>
+</div>
+<section id="greenthread">
+<h3>Greenthread 生成<a class="headerlink" href="#greenthread" title="Link to this heading">¶</a></h3>
+<p><strong>Greenthread Spawn</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">中文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.spawn">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.spawn" title="Link to this definition">¶</a></dt>
+<dd><p>启动一个绿色线程来调用 <em>func</em>。通过并行启动多个绿色线程，可以实现并行处理任务。<code class="docutils literal notranslate"><span class="pre">spawn</span></code> 的返回值是一个 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.GreenThread" title="eventlet.greenthread.GreenThread"><code class="xref py py-class docutils literal notranslate"><span class="pre">greenthread.GreenThread</span></code></a> 对象，可以用来获取 <em>func</em> 的返回值。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn" title="eventlet.greenthread.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.spawn_n">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.spawn_n" title="Link to this definition">¶</a></dt>
+<dd><p>与 <a class="reference internal" href="#eventlet.spawn" title="eventlet.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn()</span></code></a> 相同，但无法得知函数的终止方式（即无返回值或异常）。这种方式执行速度更快。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn_n" title="eventlet.greenthread.spawn_n"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_n</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.spawn_after">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.spawn_after" title="Link to this definition">¶</a></dt>
+<dd><p>在经过 <em>seconds</em> 秒后启动 <em>func</em>；这是 <a class="reference internal" href="#eventlet.spawn" title="eventlet.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn()</span></code></a> 的延迟版本。要中止启动并防止调用 <em>func</em>，可以对 <a class="reference internal" href="#eventlet.spawn_after" title="eventlet.spawn_after"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_after()</span></code></a> 的返回值调用 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.GreenThread.cancel" title="eventlet.greenthread.GreenThread.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">greenthread.GreenThread.cancel()</span></code></a>。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn_after" title="eventlet.greenthread.spawn_after"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_after</span></code></a>。</p>
+</dd></dl>
+
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">英文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>This launches a greenthread to call <em>func</em>.  Spawning off multiple greenthreads gets work done in parallel.  The return value from <code class="docutils literal notranslate"><span class="pre">spawn</span></code> is a <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.GreenThread" title="eventlet.greenthread.GreenThread"><code class="xref py py-class docutils literal notranslate"><span class="pre">greenthread.GreenThread</span></code></a> object, which can be used to retrieve the return value of <em>func</em>.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn" title="eventlet.greenthread.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn</span></code></a> for more details.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn_n</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>The same as <a class="reference internal" href="#eventlet.spawn" title="eventlet.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn()</span></code></a>, but it's not possible to know how the function terminated (i.e. no return value or exceptions).  This makes execution faster.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn_n" title="eventlet.greenthread.spawn_n"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_n</span></code></a> for more details.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">spawn_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Spawns <em>func</em> after <em>seconds</em> have elapsed; a delayed version of <a class="reference internal" href="#eventlet.spawn" title="eventlet.spawn"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn()</span></code></a>.   To abort the spawn and prevent <em>func</em> from being called, call <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.GreenThread.cancel" title="eventlet.greenthread.GreenThread.cancel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eventlet.greenthread.GreenThread.cancel()</span></code></a> on the return value of <a class="reference internal" href="#eventlet.spawn_after" title="eventlet.spawn_after"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_after()</span></code></a>.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.spawn_after" title="eventlet.greenthread.spawn_after"><code class="xref py py-func docutils literal notranslate"><span class="pre">spawn_after</span></code></a> for more details.</p>
+</dd></dl>
+
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>Greenthread 控制<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<p><strong>Greenthread Control</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">中文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.sleep">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">sleep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.sleep" title="Link to this definition">¶</a></dt>
+<dd><p>暂停当前绿色线程，允许其他线程有机会执行。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.sleep" title="eventlet.greenthread.sleep"><code class="xref py py-func docutils literal notranslate"><span class="pre">sleep</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.GreenPool">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">GreenPool</span></span><a class="headerlink" href="#eventlet.GreenPool" title="Link to this definition">¶</a></dt>
+<dd><p>池用于控制并发性。在应用程序中，通常希望仅消耗有限的内存，或者限制某段代码保持的连接数，以便为其他部分留出更多资源，或在面对不可预测的输入数据时保持一致性。GreenPool 提供了这种控制。有关如何使用这些的更多信息，请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenpool.GreenPool" title="eventlet.greenpool.GreenPool"><code class="xref py py-class docutils literal notranslate"><span class="pre">GreenPool</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.GreenPile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">GreenPile</span></span><a class="headerlink" href="#eventlet.GreenPile" title="Link to this definition">¶</a></dt>
+<dd><p>GreenPile 对象表示一组工作任务。本质上，GreenPile 是一个可以填充任务的迭代器，稍后可以读取其结果。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenpool.GreenPile" title="eventlet.greenpool.GreenPile"><code class="xref py py-class docutils literal notranslate"><span class="pre">GreenPile</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.Queue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">Queue</span></span><a class="headerlink" href="#eventlet.Queue" title="Link to this definition">¶</a></dt>
+<dd><p>队列是用于在执行单元之间传递数据的基本构造。Eventlet 的 Queue 类用于在绿色线程之间通信，并提供了一些有用的功能来实现这一点。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.queue.Queue" title="eventlet.queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a>。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.Timeout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">Timeout</span></span><a class="headerlink" href="#eventlet.Timeout" title="Link to this definition">¶</a></dt>
+<dd><p>该类用于向任何操作添加超时功能。它会在 <em>timeout</em> 秒后在当前绿色线程中引发 <em>exception</em>。当 <em>exception</em> 省略或为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 时，将引发 Timeout 实例本身。</p>
+<p>Timeout 对象是上下文管理器，因此可以在 with 语句中使用。更多细节请参见 <a class="reference internal" href="reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a>。</p>
+</dd></dl>
+
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">英文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">sleep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Suspends the current greenthread and allows others a chance to process.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenthread.sleep" title="eventlet.greenthread.sleep"><code class="xref py py-func docutils literal notranslate"><span class="pre">sleep</span></code></a> for more details.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">GreenPool</span></span></dt>
+<dd><p>Pools control concurrency.  It's very common in applications to want to consume only a finite amount of memory, or to restrict the amount of connections that one part of the code holds open so as to leave more for the rest, or to behave consistently in the face of unpredictable input data.  GreenPools provide this control.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenpool.GreenPool" title="eventlet.greenpool.GreenPool"><code class="xref py py-class docutils literal notranslate"><span class="pre">GreenPool</span></code></a> for more on how to use these.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">GreenPile</span></span></dt>
+<dd><p>GreenPile objects represent chunks of work.  In essence a GreenPile is an iterator that can be stuffed with work, and the results read out later. See <a class="reference internal" href="reference/api/eventlet.html#eventlet.greenpool.GreenPile" title="eventlet.greenpool.GreenPile"><code class="xref py py-class docutils literal notranslate"><span class="pre">GreenPile</span></code></a> for more details.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">Queue</span></span></dt>
+<dd><p>Queues are a fundamental construct for communicating data between execution units.  Eventlet's Queue class is used to communicate between greenthreads, and provides a bunch of useful features for doing that.  See <a class="reference internal" href="reference/api/eventlet.html#eventlet.queue.Queue" title="eventlet.queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Queue</span></code></a> for more details.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">Timeout</span></span></dt>
+<dd><p>This class is a way to add timeouts to anything.  It raises <em>exception</em> in the current greenthread after <em>timeout</em> seconds.  When <em>exception</em> is omitted or <code class="docutils literal notranslate"><span class="pre">None</span></code>, the Timeout instance itself is raised.</p>
+<p>Timeout objects are context managers, and so can be used in with statements.
+See <a class="reference internal" href="reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a> for more details.</p>
+</dd></dl>
+
+</div>
+</div>
+</section>
+<section id="patching">
+<h3>Patching 函数<a class="headerlink" href="#patching" title="Link to this heading">¶</a></h3>
+<p><strong>Patching Functions</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">中文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.import_patched">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">import_patched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modulename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">additional_modules</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw_additional_modules</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.import_patched" title="Link to this definition">¶</a></dt>
+<dd><p>以确保模块使用标准库模块的“绿色(green)”版本的方式导入模块，从而使所有操作都能够非阻塞地工作。唯一必需的参数是要导入的模块名称。更多信息请参见 <a class="reference internal" href="patching.html#import-green"><span class="std std-ref">导入绿色</span></a>。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.monkey_patch">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">monkey_patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">socket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.monkey_patch" title="Link to this definition">¶</a></dt>
+<dd><p>全局修补某些系统模块，使其对绿色线程友好。关键字参数允许控制哪些模块被修补。如果 <em>all</em> 为 True，则会忽略其他参数，修补所有模块。如果为 False，则其他关键字参数控制标准库特定子模块的修补。大多数参数只修补同名的单个模块（如 os、time、select）。例外情况有 socket，若存在，还会修补 ssl 模块；以及 thread，会修补 thread、threading 和 Queue 模块。多次调用 monkey_patch 是安全的。更多信息请参见 <a class="reference internal" href="patching.html#monkey-patch"><span class="std std-ref">Monkeypatching 标准库</span></a>。</p>
+</dd></dl>
+
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">英文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">import_patched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modulename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">additional_modules</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw_additional_modules</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Imports a module in a way that ensures that the module uses &quot;green&quot; versions of the standard library modules, so that everything works nonblockingly.  The only required argument is the name of the module to be imported.  For more information see <a class="reference internal" href="patching.html#import-green"><span class="std std-ref">导入绿色</span></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">monkey_patch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">socket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Globally patches certain system modules to be greenthread-friendly. The keyword arguments afford some control over which modules are patched. If <em>all</em> is True, then all modules are patched regardless of the other arguments. If it's False, then the rest of the keyword arguments control patching of specific subsections of the standard library.  Most patch the single module of the same name (os, time, select).  The exceptions are socket, which also patches the ssl module if present; and thread, which patches thread, threading, and Queue.  It's safe to call monkey_patch multiple times.  For more information see <a class="reference internal" href="patching.html#monkey-patch"><span class="std std-ref">Monkeypatching 标准库</span></a>.</p>
+</dd></dl>
+
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>网络便利函数<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<p><strong>Network Convenience Functions</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">中文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.connect">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AddressFamily.AF_INET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience function for opening client sockets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> -- Address of the server to connect to.  For TCP sockets, this is a (host, port) tuple.</p></li>
+<li><p><strong>family</strong> -- Socket family, optional.  See <a class="reference external" href="https://docs.python.org/3/library/socket.html#module-socket" title="（在 Python v3.13）"><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> documentation for available families.</p></li>
+<li><p><strong>bind</strong> -- Local address to bind to, optional.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The connected green socket object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.listen">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AddressFamily.AF_INET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reuse_addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reuse_port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.listen" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience function for opening server sockets.  This
+socket can be used in <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> or a custom <code class="docutils literal notranslate"><span class="pre">accept()</span></code> loop.</p>
+<p>Sets SO_REUSEADDR on the socket to save on annoyance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> -- Address to listen on.  For TCP sockets, this is a (host, port)  tuple.</p></li>
+<li><p><strong>family</strong> -- Socket family, optional.  See <a class="reference external" href="https://docs.python.org/3/library/socket.html#module-socket" title="（在 Python v3.13）"><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> documentation for available families.</p></li>
+<li><p><strong>backlog</strong> -- The maximum number of queued connections. Should be at least 1; the maximum
+value is system-dependent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The listening green socket object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.wrap_ssl">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">wrap_ssl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.wrap_ssl" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience function for converting a regular socket into an
+SSL socket.  Has the same interface as <code class="xref py py-func docutils literal notranslate"><span class="pre">ssl.wrap_socket()</span></code>,
+but can also use PyOpenSSL. Though, note that it ignores the
+<cite>cert_reqs</cite>, <cite>ssl_version</cite>, <cite>ca_certs</cite>, <cite>do_handshake_on_connect</cite>,
+and <cite>suppress_ragged_eofs</cite> arguments when using PyOpenSSL.</p>
+<p>The preferred idiom is to call wrap_ssl directly on the creation
+method, e.g., <code class="docutils literal notranslate"><span class="pre">wrap_ssl(connect(addr))</span></code> or
+<code class="docutils literal notranslate"><span class="pre">wrap_ssl(listen(addr),</span> <span class="pre">server_side=True)</span></code>. This way there is
+no &quot;naked&quot; socket sitting around to accidentally corrupt the SSL
+session.</p>
+<p>:return Green SSL object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.serve">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">serve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.serve" title="Link to this definition">¶</a></dt>
+<dd><p>Runs a server on the supplied socket.  Calls the function <em>handle</em> in a
+separate greenthread for every incoming client connection.  <em>handle</em> takes
+two arguments: the client socket object, and the client address:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myhandle</span><span class="p">(</span><span class="n">client_sock</span><span class="p">,</span> <span class="n">client_addr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;client connected&quot;</span><span class="p">,</span> <span class="n">client_addr</span><span class="p">)</span>
+
+<span class="n">eventlet</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)),</span> <span class="n">myhandle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returning from <em>handle</em> closes the client socket.</p>
+<p><a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> blocks the calling greenthread; it won't return until
+the server completes.  If you desire an immediate return,
+spawn a new greenthread for <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a>.</p>
+<p>Any uncaught exceptions raised in <em>handle</em> are raised as exceptions
+from <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a>, terminating the server, so be sure to be aware of the
+exceptions your application can raise.  The return value of <em>handle</em> is
+ignored.</p>
+<p>Raise a <a class="reference internal" href="#eventlet.StopServe" title="eventlet.StopServe"><code class="xref py py-class docutils literal notranslate"><span class="pre">StopServe</span></code></a> exception to gracefully terminate the
+server -- that's the only way to get the server() function to return rather
+than raise.</p>
+<p>The value in <em>concurrency</em> controls the maximum number of
+greenthreads that will be open at any time handling requests.  When
+the server hits the concurrency limit, it stops accepting new
+connections until the existing ones complete.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.StopServe">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">StopServe</span></span><a class="headerlink" href="#eventlet.StopServe" title="Link to this definition">¶</a></dt>
+<dd><p>Exception class used for quitting <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> gracefully.</p>
+</dd></dl>
+
+<p>这些是 Eventlet 的基本原语；其他 Eventlet 模块中还有更多内容；请查看:doc:<cite>modules</cite> 。</p>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">英文</label><div class="tab-content docutils container">
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AddressFamily.AF_INET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Convenience function for opening client sockets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> -- Address of the server to connect to.  For TCP sockets, this is a (host, port) tuple.</p></li>
+<li><p><strong>family</strong> -- Socket family, optional.  See <a class="reference external" href="https://docs.python.org/3/library/socket.html#module-socket" title="（在 Python v3.13）"><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> documentation for available families.</p></li>
+<li><p><strong>bind</strong> -- Local address to bind to, optional.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The connected green socket object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">AddressFamily.AF_INET</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backlog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reuse_addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reuse_port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Convenience function for opening server sockets.  This
+socket can be used in <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> or a custom <code class="docutils literal notranslate"><span class="pre">accept()</span></code> loop.</p>
+<p>Sets SO_REUSEADDR on the socket to save on annoyance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> -- Address to listen on.  For TCP sockets, this is a (host, port)  tuple.</p></li>
+<li><p><strong>family</strong> -- Socket family, optional.  See <a class="reference external" href="https://docs.python.org/3/library/socket.html#module-socket" title="（在 Python v3.13）"><code class="xref py py-mod docutils literal notranslate"><span class="pre">socket</span></code></a> documentation for available families.</p></li>
+<li><p><strong>backlog</strong> -- The maximum number of queued connections. Should be at least 1; the maximum
+value is system-dependent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>The listening green socket object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">wrap_ssl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Convenience function for converting a regular socket into an
+SSL socket.  Has the same interface as <code class="xref py py-func docutils literal notranslate"><span class="pre">ssl.wrap_socket()</span></code>,
+but can also use PyOpenSSL. Though, note that it ignores the
+<cite>cert_reqs</cite>, <cite>ssl_version</cite>, <cite>ca_certs</cite>, <cite>do_handshake_on_connect</cite>,
+and <cite>suppress_ragged_eofs</cite> arguments when using PyOpenSSL.</p>
+<p>The preferred idiom is to call wrap_ssl directly on the creation
+method, e.g., <code class="docutils literal notranslate"><span class="pre">wrap_ssl(connect(addr))</span></code> or
+<code class="docutils literal notranslate"><span class="pre">wrap_ssl(listen(addr),</span> <span class="pre">server_side=True)</span></code>. This way there is
+no &quot;naked&quot; socket sitting around to accidentally corrupt the SSL
+session.</p>
+<p>:return Green SSL object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">serve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Runs a server on the supplied socket.  Calls the function <em>handle</em> in a
+separate greenthread for every incoming client connection.  <em>handle</em> takes
+two arguments: the client socket object, and the client address:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myhandle</span><span class="p">(</span><span class="n">client_sock</span><span class="p">,</span> <span class="n">client_addr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;client connected&quot;</span><span class="p">,</span> <span class="n">client_addr</span><span class="p">)</span>
+
+<span class="n">eventlet</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)),</span> <span class="n">myhandle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Returning from <em>handle</em> closes the client socket.</p>
+<p><a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> blocks the calling greenthread; it won't return until
+the server completes.  If you desire an immediate return,
+spawn a new greenthread for <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a>.</p>
+<p>Any uncaught exceptions raised in <em>handle</em> are raised as exceptions
+from <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a>, terminating the server, so be sure to be aware of the
+exceptions your application can raise.  The return value of <em>handle</em> is
+ignored.</p>
+<p>Raise a <a class="reference internal" href="#eventlet.StopServe" title="eventlet.StopServe"><code class="xref py py-class docutils literal notranslate"><span class="pre">StopServe</span></code></a> exception to gracefully terminate the
+server -- that's the only way to get the server() function to return rather
+than raise.</p>
+<p>The value in <em>concurrency</em> controls the maximum number of
+greenthreads that will be open at any time handling requests.  When
+the server hits the concurrency limit, it stops accepting new
+connections until the existing ones complete.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.</span></span><span class="sig-name descname"><span class="pre">StopServe</span></span></dt>
+<dd><p>Exception class used for quitting <a class="reference internal" href="#eventlet.serve" title="eventlet.serve"><code class="xref py py-func docutils literal notranslate"><span class="pre">serve()</span></code></a> gracefully.</p>
+</dd></dl>
+
+<p>These are the basic primitives of Eventlet; there are a lot more out there in the other Eventlet modules; check out the <a class="reference internal" href="modules.html"><span class="doc">模块参考</span></a>.</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="design_patterns.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">设计模式</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="asyncio/guide/glossary.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">术语</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">基本用法</a><ul>
+<li><a class="reference internal" href="#api">主要 API</a><ul>
+<li><a class="reference internal" href="#greenthread">Greenthread 生成</a><ul>
+<li><a class="reference internal" href="#eventlet.spawn"><code class="docutils literal notranslate"><span class="pre">eventlet.spawn()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.spawn_n"><code class="docutils literal notranslate"><span class="pre">eventlet.spawn_n()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.spawn_after"><code class="docutils literal notranslate"><span class="pre">eventlet.spawn_after()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">Greenthread 控制</a><ul>
+<li><a class="reference internal" href="#eventlet.sleep"><code class="docutils literal notranslate"><span class="pre">eventlet.sleep()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.GreenPool"><code class="docutils literal notranslate"><span class="pre">eventlet.GreenPool</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.GreenPile"><code class="docutils literal notranslate"><span class="pre">eventlet.GreenPile</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.Queue"><code class="docutils literal notranslate"><span class="pre">eventlet.Queue</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.Timeout"><code class="docutils literal notranslate"><span class="pre">eventlet.Timeout</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#patching">Patching 函数</a><ul>
+<li><a class="reference internal" href="#eventlet.import_patched"><code class="docutils literal notranslate"><span class="pre">eventlet.import_patched()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.monkey_patch"><code class="docutils literal notranslate"><span class="pre">eventlet.monkey_patch()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">网络便利函数</a><ul>
+<li><a class="reference internal" href="#eventlet.connect"><code class="docutils literal notranslate"><span class="pre">connect()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.listen"><code class="docutils literal notranslate"><span class="pre">listen()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.wrap_ssl"><code class="docutils literal notranslate"><span class="pre">wrap_ssl()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.serve"><code class="docutils literal notranslate"><span class="pre">serve()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.StopServe"><code class="docutils literal notranslate"><span class="pre">StopServe</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/tabs.js?v=3ee01567"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

@@ -1,0 +1,756 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../../genindex.html" /><link rel="search" title="搜索" href="../../search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>eventlet - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../asyncio/index.html">Eventlet 中的 Asyncio</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncio/compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncio/migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncio/guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncio/guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../asyncio/guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">环境变量</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">模块参考</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/reference/api/modules.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/reference/api/modules.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="eventlet">
+<h1>eventlet<a class="headerlink" href="#eventlet" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="eventlet.html">eventlet package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.green.html">eventlet.green package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.BaseHTTPServer">eventlet.green.BaseHTTPServer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.CGIHTTPServer">eventlet.green.CGIHTTPServer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#eventlet-green-mysqldb-module">eventlet.green.MySQLdb module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.Queue">eventlet.green.Queue module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.SimpleHTTPServer">eventlet.green.SimpleHTTPServer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.SocketServer">eventlet.green.SocketServer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.asynchat">eventlet.green.asynchat module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.asyncore">eventlet.green.asyncore module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.builtin">eventlet.green.builtin module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.ftplib">eventlet.green.ftplib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.httplib">eventlet.green.httplib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.os">eventlet.green.os module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.profile">eventlet.green.profile module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.select">eventlet.green.select module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.selectors">eventlet.green.selectors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.socket">eventlet.green.socket module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.ssl">eventlet.green.ssl module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.subprocess">eventlet.green.subprocess module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.thread">eventlet.green.thread module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.threading">eventlet.green.threading module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.time">eventlet.green.time module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#eventlet-green-urllib2-module">eventlet.green.urllib2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green.zmq">eventlet.green.zmq module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.green.html#module-eventlet.green">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.greenio.html">eventlet.greenio package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.greenio.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.greenio.html#module-eventlet.greenio.base">eventlet.greenio.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.greenio.html#module-eventlet.greenio.py3">eventlet.greenio.py3 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.greenio.html#module-eventlet.greenio">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.hubs.html">eventlet.hubs package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.asyncio">eventlet.hubs.asyncio module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.epolls">eventlet.hubs.epolls module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.hub">eventlet.hubs.hub module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.kqueue">eventlet.hubs.kqueue module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.poll">eventlet.hubs.poll module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#eventlet-hubs-pyevent-module">eventlet.hubs.pyevent module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.selects">eventlet.hubs.selects module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs.timer">eventlet.hubs.timer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.hubs.html#module-eventlet.hubs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.support.html">eventlet.support package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#module-eventlet.support.greendns">eventlet.support.greendns module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#module-eventlet.support.greenlets">eventlet.support.greenlets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#module-eventlet.support.psycopg2_patcher">eventlet.support.psycopg2_patcher module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#eventlet-support-pylib-module">eventlet.support.pylib module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#eventlet-support-stacklesspypys-module">eventlet.support.stacklesspypys module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#eventlet-support-stacklesss-module">eventlet.support.stacklesss module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.support.html#module-eventlet.support">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.zipkin.html">eventlet.zipkin package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-api-module">eventlet.zipkin.api module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-client-module">eventlet.zipkin.client module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-greenthread-module">eventlet.zipkin.greenthread module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-http-module">eventlet.zipkin.http module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-log-module">eventlet.zipkin.log module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-patcher-module">eventlet.zipkin.patcher module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#eventlet-zipkin-wsgi-module">eventlet.zipkin.wsgi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.zipkin.html#module-eventlet.zipkin">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.asyncio">eventlet.asyncio module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.asyncio.spawn_for_awaitable"><code class="docutils literal notranslate"><span class="pre">spawn_for_awaitable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.backdoor">eventlet.backdoor module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.backdoor.FileProxy"><code class="docutils literal notranslate"><span class="pre">FileProxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.FileProxy.flush"><code class="docutils literal notranslate"><span class="pre">FileProxy.flush()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.FileProxy.isatty"><code class="docutils literal notranslate"><span class="pre">FileProxy.isatty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.FileProxy.readline"><code class="docutils literal notranslate"><span class="pre">FileProxy.readline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.FileProxy.write"><code class="docutils literal notranslate"><span class="pre">FileProxy.write()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.backdoor.SocketConsole"><code class="docutils literal notranslate"><span class="pre">SocketConsole</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.SocketConsole.finalize"><code class="docutils literal notranslate"><span class="pre">SocketConsole.finalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.SocketConsole.run"><code class="docutils literal notranslate"><span class="pre">SocketConsole.run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.SocketConsole.switch"><code class="docutils literal notranslate"><span class="pre">SocketConsole.switch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.backdoor.SocketConsole.switch_out"><code class="docutils literal notranslate"><span class="pre">SocketConsole.switch_out()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.backdoor.backdoor"><code class="docutils literal notranslate"><span class="pre">backdoor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.backdoor.backdoor_server"><code class="docutils literal notranslate"><span class="pre">backdoor_server()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.convenience">eventlet.convenience module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.ReusePortUnavailableWarning"><code class="docutils literal notranslate"><span class="pre">ReusePortUnavailableWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.ReuseRandomPortWarning"><code class="docutils literal notranslate"><span class="pre">ReuseRandomPortWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.StopServe"><code class="docutils literal notranslate"><span class="pre">StopServe</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.connect"><code class="docutils literal notranslate"><span class="pre">connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.listen"><code class="docutils literal notranslate"><span class="pre">listen()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.serve"><code class="docutils literal notranslate"><span class="pre">serve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.convenience.wrap_ssl"><code class="docutils literal notranslate"><span class="pre">wrap_ssl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.corolocal">eventlet.corolocal module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.corolocal.get_ident"><code class="docutils literal notranslate"><span class="pre">get_ident()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.corolocal.local"><code class="docutils literal notranslate"><span class="pre">local</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.coros">eventlet.coros module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.coros.metaphore"><code class="docutils literal notranslate"><span class="pre">metaphore</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.coros.metaphore.dec"><code class="docutils literal notranslate"><span class="pre">metaphore.dec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.coros.metaphore.inc"><code class="docutils literal notranslate"><span class="pre">metaphore.inc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.coros.metaphore.wait"><code class="docutils literal notranslate"><span class="pre">metaphore.wait()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.dagpool">eventlet.dagpool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.dagpool.Collision"><code class="docutils literal notranslate"><span class="pre">Collision</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool"><code class="docutils literal notranslate"><span class="pre">DAGPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.__init__"><code class="docutils literal notranslate"><span class="pre">DAGPool.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.__getitem__"><code class="docutils literal notranslate"><span class="pre">DAGPool.__getitem__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.get"><code class="docutils literal notranslate"><span class="pre">DAGPool.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.items"><code class="docutils literal notranslate"><span class="pre">DAGPool.items()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.keys"><code class="docutils literal notranslate"><span class="pre">DAGPool.keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.kill"><code class="docutils literal notranslate"><span class="pre">DAGPool.kill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.post"><code class="docutils literal notranslate"><span class="pre">DAGPool.post()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.running"><code class="docutils literal notranslate"><span class="pre">DAGPool.running()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.running_keys"><code class="docutils literal notranslate"><span class="pre">DAGPool.running_keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.spawn"><code class="docutils literal notranslate"><span class="pre">DAGPool.spawn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.spawn_many"><code class="docutils literal notranslate"><span class="pre">DAGPool.spawn_many()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.wait"><code class="docutils literal notranslate"><span class="pre">DAGPool.wait()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.wait_each"><code class="docutils literal notranslate"><span class="pre">DAGPool.wait_each()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.wait_each_exception"><code class="docutils literal notranslate"><span class="pre">DAGPool.wait_each_exception()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.wait_each_success"><code class="docutils literal notranslate"><span class="pre">DAGPool.wait_each_success()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.waitall"><code class="docutils literal notranslate"><span class="pre">DAGPool.waitall()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.waiting"><code class="docutils literal notranslate"><span class="pre">DAGPool.waiting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.dagpool.DAGPool.waiting_for"><code class="docutils literal notranslate"><span class="pre">DAGPool.waiting_for()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.dagpool.PropagateError"><code class="docutils literal notranslate"><span class="pre">PropagateError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.db_pool">eventlet.db_pool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.BaseConnectionPool"><code class="docutils literal notranslate"><span class="pre">BaseConnectionPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.BaseConnectionPool.clear"><code class="docutils literal notranslate"><span class="pre">BaseConnectionPool.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.BaseConnectionPool.get"><code class="docutils literal notranslate"><span class="pre">BaseConnectionPool.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.BaseConnectionPool.item"><code class="docutils literal notranslate"><span class="pre">BaseConnectionPool.item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.BaseConnectionPool.put"><code class="docutils literal notranslate"><span class="pre">BaseConnectionPool.put()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.ConnectTimeout"><code class="docutils literal notranslate"><span class="pre">ConnectTimeout</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.ConnectionPool"><code class="docutils literal notranslate"><span class="pre">ConnectionPool</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.DatabaseConnector"><code class="docutils literal notranslate"><span class="pre">DatabaseConnector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.DatabaseConnector.credentials_for"><code class="docutils literal notranslate"><span class="pre">DatabaseConnector.credentials_for()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.DatabaseConnector.get"><code class="docutils literal notranslate"><span class="pre">DatabaseConnector.get()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.affected_rows"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.affected_rows()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.autocommit"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.autocommit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.begin"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.begin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.change_user"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.change_user()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.character_set_name"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.character_set_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.close"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.commit"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.commit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.cursor"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.cursor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.dump_debug_info"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.dump_debug_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.errno"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.errno()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.error"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.errorhandler"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.errorhandler()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.get_server_info"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.get_server_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.insert_id"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.insert_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.literal"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.literal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.ping"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.ping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.query"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.rollback"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.rollback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.select_db"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.select_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.server_capabilities"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.server_capabilities()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.set_character_set"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.set_character_set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.set_isolation_level"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.set_isolation_level()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.set_server_option"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.set_server_option()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.set_sql_mode"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.set_sql_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.show_warnings"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.show_warnings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.shutdown"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.shutdown()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.sqlstate"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.sqlstate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.stat"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.stat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.store_result"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.store_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.string_literal"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.string_literal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.thread_id"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.thread_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.use_result"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.use_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.GenericConnectionWrapper.warning_count"><code class="docutils literal notranslate"><span class="pre">GenericConnectionWrapper.warning_count()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.PooledConnectionWrapper"><code class="docutils literal notranslate"><span class="pre">PooledConnectionWrapper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.PooledConnectionWrapper.close"><code class="docutils literal notranslate"><span class="pre">PooledConnectionWrapper.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.RawConnectionPool"><code class="docutils literal notranslate"><span class="pre">RawConnectionPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.RawConnectionPool.connect"><code class="docutils literal notranslate"><span class="pre">RawConnectionPool.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.RawConnectionPool.create"><code class="docutils literal notranslate"><span class="pre">RawConnectionPool.create()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.TpooledConnectionPool"><code class="docutils literal notranslate"><span class="pre">TpooledConnectionPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.TpooledConnectionPool.connect"><code class="docutils literal notranslate"><span class="pre">TpooledConnectionPool.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.db_pool.TpooledConnectionPool.create"><code class="docutils literal notranslate"><span class="pre">TpooledConnectionPool.create()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.db_pool.cleanup_rollback"><code class="docutils literal notranslate"><span class="pre">cleanup_rollback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.debug">eventlet.debug module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.format_asyncio_info"><code class="docutils literal notranslate"><span class="pre">format_asyncio_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.format_hub_listeners"><code class="docutils literal notranslate"><span class="pre">format_hub_listeners()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.format_hub_timers"><code class="docutils literal notranslate"><span class="pre">format_hub_timers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.format_threads_info"><code class="docutils literal notranslate"><span class="pre">format_threads_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.hub_blocking_detection"><code class="docutils literal notranslate"><span class="pre">hub_blocking_detection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.hub_exceptions"><code class="docutils literal notranslate"><span class="pre">hub_exceptions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.hub_listener_stacks"><code class="docutils literal notranslate"><span class="pre">hub_listener_stacks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.hub_prevent_multiple_readers"><code class="docutils literal notranslate"><span class="pre">hub_prevent_multiple_readers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.hub_timer_stacks"><code class="docutils literal notranslate"><span class="pre">hub_timer_stacks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.spew"><code class="docutils literal notranslate"><span class="pre">spew()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.tpool_exceptions"><code class="docutils literal notranslate"><span class="pre">tpool_exceptions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.debug.unspew"><code class="docutils literal notranslate"><span class="pre">unspew()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.event">eventlet.event module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.event.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.has_exception"><code class="docutils literal notranslate"><span class="pre">Event.has_exception()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.has_result"><code class="docutils literal notranslate"><span class="pre">Event.has_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.poll"><code class="docutils literal notranslate"><span class="pre">Event.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.poll_exception"><code class="docutils literal notranslate"><span class="pre">Event.poll_exception()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.poll_result"><code class="docutils literal notranslate"><span class="pre">Event.poll_result()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.ready"><code class="docutils literal notranslate"><span class="pre">Event.ready()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.reset"><code class="docutils literal notranslate"><span class="pre">Event.reset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.send"><code class="docutils literal notranslate"><span class="pre">Event.send()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.send_exception"><code class="docutils literal notranslate"><span class="pre">Event.send_exception()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.event.Event.wait"><code class="docutils literal notranslate"><span class="pre">Event.wait()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.greenpool">eventlet.greenpool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPile"><code class="docutils literal notranslate"><span class="pre">GreenPile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPile.next"><code class="docutils literal notranslate"><span class="pre">GreenPile.next()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPile.spawn"><code class="docutils literal notranslate"><span class="pre">GreenPile.spawn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool"><code class="docutils literal notranslate"><span class="pre">GreenPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.free"><code class="docutils literal notranslate"><span class="pre">GreenPool.free()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.imap"><code class="docutils literal notranslate"><span class="pre">GreenPool.imap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.resize"><code class="docutils literal notranslate"><span class="pre">GreenPool.resize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.running"><code class="docutils literal notranslate"><span class="pre">GreenPool.running()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.spawn"><code class="docutils literal notranslate"><span class="pre">GreenPool.spawn()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.spawn_n"><code class="docutils literal notranslate"><span class="pre">GreenPool.spawn_n()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.starmap"><code class="docutils literal notranslate"><span class="pre">GreenPool.starmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.waitall"><code class="docutils literal notranslate"><span class="pre">GreenPool.waitall()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenpool.GreenPool.waiting"><code class="docutils literal notranslate"><span class="pre">GreenPool.waiting()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.greenthread">eventlet.greenthread module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread"><code class="docutils literal notranslate"><span class="pre">GreenThread</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.cancel"><code class="docutils literal notranslate"><span class="pre">GreenThread.cancel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.kill"><code class="docutils literal notranslate"><span class="pre">GreenThread.kill()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.link"><code class="docutils literal notranslate"><span class="pre">GreenThread.link()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.main"><code class="docutils literal notranslate"><span class="pre">GreenThread.main()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.unlink"><code class="docutils literal notranslate"><span class="pre">GreenThread.unlink()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.greenthread.GreenThread.wait"><code class="docutils literal notranslate"><span class="pre">GreenThread.wait()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.getcurrent"><code class="docutils literal notranslate"><span class="pre">getcurrent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.kill"><code class="docutils literal notranslate"><span class="pre">kill()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.sleep"><code class="docutils literal notranslate"><span class="pre">sleep()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.spawn"><code class="docutils literal notranslate"><span class="pre">spawn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.spawn_after"><code class="docutils literal notranslate"><span class="pre">spawn_after()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.spawn_after_local"><code class="docutils literal notranslate"><span class="pre">spawn_after_local()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.greenthread.spawn_n"><code class="docutils literal notranslate"><span class="pre">spawn_n()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.lock">eventlet.lock module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.lock.Lock"><code class="docutils literal notranslate"><span class="pre">Lock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.lock.Lock.release"><code class="docutils literal notranslate"><span class="pre">Lock.release()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.patcher">eventlet.patcher module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.patcher.import_patched"><code class="docutils literal notranslate"><span class="pre">import_patched()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.patcher.inject"><code class="docutils literal notranslate"><span class="pre">inject()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.patcher.is_monkey_patched"><code class="docutils literal notranslate"><span class="pre">is_monkey_patched()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.patcher.monkey_patch"><code class="docutils literal notranslate"><span class="pre">monkey_patch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.pools">eventlet.pools module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool"><code class="docutils literal notranslate"><span class="pre">Pool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.create"><code class="docutils literal notranslate"><span class="pre">Pool.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.free"><code class="docutils literal notranslate"><span class="pre">Pool.free()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.get"><code class="docutils literal notranslate"><span class="pre">Pool.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.item"><code class="docutils literal notranslate"><span class="pre">Pool.item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.put"><code class="docutils literal notranslate"><span class="pre">Pool.put()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.resize"><code class="docutils literal notranslate"><span class="pre">Pool.resize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.Pool.waiting"><code class="docutils literal notranslate"><span class="pre">Pool.waiting()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.pools.TokenPool"><code class="docutils literal notranslate"><span class="pre">TokenPool</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.pools.TokenPool.create"><code class="docutils literal notranslate"><span class="pre">TokenPool.create()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.queue">eventlet.queue module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.Empty"><code class="docutils literal notranslate"><span class="pre">Empty</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.Full"><code class="docutils literal notranslate"><span class="pre">Full</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.LifoQueue"><code class="docutils literal notranslate"><span class="pre">LifoQueue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue"><code class="docutils literal notranslate"><span class="pre">LightQueue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.empty"><code class="docutils literal notranslate"><span class="pre">LightQueue.empty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.full"><code class="docutils literal notranslate"><span class="pre">LightQueue.full()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.get"><code class="docutils literal notranslate"><span class="pre">LightQueue.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.get_nowait"><code class="docutils literal notranslate"><span class="pre">LightQueue.get_nowait()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.getting"><code class="docutils literal notranslate"><span class="pre">LightQueue.getting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.put"><code class="docutils literal notranslate"><span class="pre">LightQueue.put()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.put_nowait"><code class="docutils literal notranslate"><span class="pre">LightQueue.put_nowait()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.putting"><code class="docutils literal notranslate"><span class="pre">LightQueue.putting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.qsize"><code class="docutils literal notranslate"><span class="pre">LightQueue.qsize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.LightQueue.resize"><code class="docutils literal notranslate"><span class="pre">LightQueue.resize()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.PriorityQueue"><code class="docutils literal notranslate"><span class="pre">PriorityQueue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.queue.Queue"><code class="docutils literal notranslate"><span class="pre">Queue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.Queue.join"><code class="docutils literal notranslate"><span class="pre">Queue.join()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.queue.Queue.task_done"><code class="docutils literal notranslate"><span class="pre">Queue.task_done()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.semaphore">eventlet.semaphore module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.semaphore.BoundedSemaphore"><code class="docutils literal notranslate"><span class="pre">BoundedSemaphore</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.BoundedSemaphore.release"><code class="docutils literal notranslate"><span class="pre">BoundedSemaphore.release()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore.acquire"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore.balance"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore.balance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore.bounded"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore.bounded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore.locked"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore.locked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.CappedSemaphore.release"><code class="docutils literal notranslate"><span class="pre">CappedSemaphore.release()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore"><code class="docutils literal notranslate"><span class="pre">Semaphore</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore.acquire"><code class="docutils literal notranslate"><span class="pre">Semaphore.acquire()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore.balance"><code class="docutils literal notranslate"><span class="pre">Semaphore.balance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore.bounded"><code class="docutils literal notranslate"><span class="pre">Semaphore.bounded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore.locked"><code class="docutils literal notranslate"><span class="pre">Semaphore.locked()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.semaphore.Semaphore.release"><code class="docutils literal notranslate"><span class="pre">Semaphore.release()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.timeout">eventlet.timeout module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.timeout.Timeout"><code class="docutils literal notranslate"><span class="pre">Timeout</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.timeout.Timeout.cancel"><code class="docutils literal notranslate"><span class="pre">Timeout.cancel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.timeout.Timeout.is_timeout"><code class="docutils literal notranslate"><span class="pre">Timeout.is_timeout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.timeout.Timeout.pending"><code class="docutils literal notranslate"><span class="pre">Timeout.pending</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.timeout.Timeout.start"><code class="docutils literal notranslate"><span class="pre">Timeout.start()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.timeout.is_timeout"><code class="docutils literal notranslate"><span class="pre">is_timeout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.timeout.with_timeout"><code class="docutils literal notranslate"><span class="pre">with_timeout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.timeout.wrap_is_timeout"><code class="docutils literal notranslate"><span class="pre">wrap_is_timeout()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.tpool">eventlet.tpool module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.tpool.Proxy"><code class="docutils literal notranslate"><span class="pre">Proxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.tpool.Proxy.next"><code class="docutils literal notranslate"><span class="pre">Proxy.next()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.tpool.execute"><code class="docutils literal notranslate"><span class="pre">execute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.tpool.killall"><code class="docutils literal notranslate"><span class="pre">killall()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.tpool.set_num_threads"><code class="docutils literal notranslate"><span class="pre">set_num_threads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.websocket">eventlet.websocket module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocket"><code class="docutils literal notranslate"><span class="pre">WebSocket</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocket.close"><code class="docutils literal notranslate"><span class="pre">WebSocket.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocket.send"><code class="docutils literal notranslate"><span class="pre">WebSocket.send()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocket.wait"><code class="docutils literal notranslate"><span class="pre">WebSocket.wait()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocketWSGI"><code class="docutils literal notranslate"><span class="pre">WebSocketWSGI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="eventlet.html#eventlet.websocket.WebSocketWSGI.configured"><code class="docutils literal notranslate"><span class="pre">WebSocketWSGI.configured()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet.wsgi">eventlet.wsgi module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.wsgi.format_date_time"><code class="docutils literal notranslate"><span class="pre">format_date_time()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="eventlet.html#eventlet.wsgi.server"><code class="docutils literal notranslate"><span class="pre">server()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="eventlet.html#module-eventlet">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

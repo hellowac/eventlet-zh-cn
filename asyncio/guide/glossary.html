@@ -1,0 +1,614 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../../genindex.html" /><link rel="search" title="搜索" href="../../search.html" /><link rel="next" title="基本用法" href="../../basic_usage.html" /><link rel="prev" title="管理您的弃用内容" href="deprecation.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>术语 - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">Eventlet 中的 Asyncio</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">环境变量</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">模块参考</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/asyncio/guide/glossary.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/asyncio/guide/glossary.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="glossary-guide">
+<span id="id1"></span><h1>术语<a class="headerlink" href="#glossary-guide" title="Link to this heading">¶</a></h1>
+<p><strong>Glossary</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<p>本词汇表简要描述了在 Eventlet 中通常使用的一些术语，尤其是在迁移上下文中的术语。
+该词汇表的目标是确保每个人对所使用的术语有相同的理解。</p>
+<p>有关迁移的更多信息，请参见 <a class="reference internal" href="../migration.html#migration-guide"><span class="std std-ref">迁移出 Eventlet</span></a>。</p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<p>This glossary provides a brief description of some of the terms used within
+Eventlet in general, and more specifically in the migration context.
+The goal of this glossary is to ensure that everybody has the same
+understanding of the used terms.</p>
+<p>For more information about anything the migration, see the
+<a class="reference internal" href="../migration.html#migration-guide"><span class="std std-ref">迁移出 Eventlet</span></a>.</p>
+</div>
+</div>
+<section id="glossary-concurrency">
+<span id="id2"></span><h2>并发<a class="headerlink" href="#glossary-concurrency" title="Link to this heading">¶</a></h2>
+<p><strong>Concurrency</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>并发**是指两个或更多任务可以在重叠的时间**段**内开始、运行和完成。它不一定意味着它们会在**同一时刻**都在运行。例如，在单核机器上的**多任务处理</strong>。</p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Concurrency</strong> is when two or more tasks can start, run, and complete in
+overlapping time <strong>periods</strong>. It doesn't necessarily mean they'll ever both be
+running <strong>at the same instant</strong>. For example, _multitasking_ on a single-core
+machine.</p>
+</div>
+</div>
+</section>
+<section id="glossary-cooperative-multitasking">
+<span id="id3"></span><h2>协作式多任务<a class="headerlink" href="#glossary-cooperative-multitasking" title="Link to this heading">¶</a></h2>
+<p><strong>Cooperative Multitasking</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">中文</label><div class="tab-content docutils container">
+<p>每当一个 <strong>线程</strong> 开始休眠或等待网络 I/O 时，另一个线程就有机会获取 <strong>全局解释器锁（GIL）</strong> 并执行 Python 代码。这就是 <strong>协作式多任务</strong> 。</p>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">英文</label><div class="tab-content docutils container">
+<p>Whenever a <strong>thread</strong> begins sleeping or awaiting network I/O, there is a
+chance for another thread to take the <strong>GIL</strong> and execute Python code.
+This is <strong>cooperative multitasking</strong>.</p>
+</div>
+</div>
+</section>
+<section id="glossary-coro">
+<span id="id4"></span><h2>一个协程<a class="headerlink" href="#glossary-coro" title="Link to this heading">¶</a></h2>
+<p><strong>Coro</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">中文</label><div class="tab-content docutils container">
+<p>在 Python API 文档中，使用 <strong>coro</strong> 这个名称是一种常见的约定。它指的是一个协程；严格来说，是调用 <cite>async def</cite> 函数的结果，而不是函数本身。</p>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">英文</label><div class="tab-content docutils container">
+<p>Using the name <strong>coro</strong> is a common convention in the Python API
+documentation. It refers to a coroutine; i.e., strictly speaking, the result
+of calling an async def function, and not the function itself.</p>
+</div>
+</div>
+</section>
+<section id="glossary-coroutine">
+<span id="id5"></span><h2>协程<a class="headerlink" href="#glossary-coroutine" title="Link to this heading">¶</a></h2>
+<p><strong>Coroutine</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>协程</strong> 是允许执行被挂起和恢复的程序组件，具有广泛的应用。它们被描述为“可以暂停执行的函数”。</p>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Coroutines</strong> are programs components that allow execution to be suspended
+and resumed, generalizing. They have been described as &quot;functions whose
+execution you can pause&quot;.</p>
+</div>
+</div>
+</section>
+<section id="future">
+<span id="glossary-future"></span><h2>Future<a class="headerlink" href="#future" title="Link to this heading">¶</a></h2>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>Future</strong> 代表某个活动的未来完成状态，并由事件循环管理。Future 是一个特殊的低级可等待对象，表示异步操作的最终结果。</p>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">英文</label><div class="tab-content docutils container">
+<p>A <strong>future</strong> represents a future completion state of some activity and is
+managed by the loop. A Future is a special low-level awaitable object that
+represents an eventual result of an asynchronous operation.</p>
+</div>
+</div>
+</section>
+<section id="greenlet">
+<span id="glossary-greenlet"></span><h2>Greenlet<a class="headerlink" href="#greenlet" title="Link to this heading">¶</a></h2>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>Greenlet</strong> 是一种轻量级的 <strong>协程</strong>，用于进程内的顺序并发编程（参见 <strong>并发</strong> ）。你通常可以将 greenlet 看作是协作式调度的 <strong>线程</strong>。其主要区别在于，由于它们是协作式调度的，你可以控制它们的执行时机，并且由于它们是 <strong>协程</strong>，许多 greenlet 可以存在于同一个原生 <strong>线程</strong> 中。</p>
+<p>Greenlet 是协作式的（参见 <strong>协作式多任务</strong>）和顺序执行的。这意味着当一个 greenlet 正在运行时，其他 greenlet 不能运行；程序员完全控制何时在 greenlet 之间切换执行。换句话说，使用 greenlet 时不应期待 <strong>抢占式</strong> 行为。</p>
+<p>Greenlet 也是一个 <a class="reference external" href="https://greenlet.readthedocs.io/en/latest/">库</a>，提供 greenlet 机制。Eventlet 基于 greenlet 库。</p>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">英文</label><div class="tab-content docutils container">
+<p>A <strong>greenlet</strong> is a lightweight <strong>coroutine</strong> for in-process sequential
+concurrent programming (see <strong>concurrency</strong>). You can usually think of
+greenlets as cooperatively scheduled <strong>threads</strong>. The major differences are
+that since they’re cooperatively scheduled, you are in control of when they
+execute, and since they are <strong>coroutines</strong>, many greenlets can exist in a
+single native <strong>thread</strong>.</p>
+<p>Greenlets are cooperative (see <strong>cooperative multitasking</strong>) and sequential.
+This means that when one greenlet is running, no other greenlet can be
+running; the programmer is fully in control of when execution switches between
+greenlets. In other words ones, when using greenlets, should not expect
+<strong>preemptive</strong> behavior.</p>
+<p>Greenlet is also the name of a <a class="reference external" href="https://greenlet.readthedocs.io/en/latest/">library</a> that provide the greenlet
+mechanism. Eventlet is based on the greenlet library.</p>
+</div>
+</div>
+</section>
+<section id="green-thread">
+<span id="glossary-green-thread"></span><h2>Green Thread<a class="headerlink" href="#green-thread" title="Link to this heading">¶</a></h2>
+<p><strong>Green Thread</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>Green thread</strong> 是一种由运行时库或虚拟机（VM）调度的 <strong>线程</strong>，而不是由底层操作系统（OS）原生调度。Green thread 模拟多线程环境，而无需依赖任何原生操作系统功能，它们在用户空间而非内核空间中进行管理，使其能够在没有原生线程支持的环境中工作。</p>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">英文</label><div class="tab-content docutils container">
+<p>A <strong>green thread</strong> is a <strong>threads</strong> that is scheduled by a runtime library
+or virtual machine (VM) instead of natively by the underlying operating system
+(OS). Green threads emulate multithreaded environments without relying on any
+native OS abilities, and they are managed in user space) instead of kernel
+space, enabling them to work in environments that do not have native thread
+support.</p>
+</div>
+</div>
+</section>
+<section id="gil">
+<span id="glossary-gil"></span><h2>全局解释器锁 (GIL)<a class="headerlink" href="#gil" title="Link to this heading">¶</a></h2>
+<p><strong>Global Interpreter Lock (GIL)</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>全局解释器锁（GIL）</strong> 是 CPython 内部使用的一个锁，用于确保在 Python 虚拟机中一次只有一个 <strong>线程</strong> 在运行。通常，Python 只在字节码指令之间切换线程（参见 <strong>抢占式多任务</strong> 和 <strong>协作式多任务</strong> ）。</p>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">英文</label><div class="tab-content docutils container">
+<p>A <strong>global interpreter lock (GIL</strong>) is a lock used internally to CPython to
+ensure that only one <strong>thread</strong> runs in the Python VM at a time. In general,
+Python offers to switch among threads only between bytecode instructions (see
+<strong>preemptive multitasking</strong> and <strong>cooperative multitasking</strong>).</p>
+</div>
+</div>
+</section>
+<section id="glossary-parallelism">
+<span id="id7"></span><h2>并行<a class="headerlink" href="#glossary-parallelism" title="Link to this heading">¶</a></h2>
+<p><strong>Parallelism</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--9-input--1" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>并行</strong> 是指任务 _字面上_ 同时运行，例如在多核处理器上。它是当至少两个线程同时执行时出现的状态。</p>
+</div>
+<input class="tab-input" id="tab-set--9-input--2" name="tab-set--9" type="radio"><label class="tab-label" for="tab-set--9-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Parallelism</strong> is when tasks _literally_ run at the same time, e.g., on a
+multicore processor. A condition that arises when at least two threads are
+executing simultaneously.</p>
+</div>
+</div>
+</section>
+<section id="glossary-preemptive">
+<span id="id8"></span><h2>抢占<a class="headerlink" href="#glossary-preemptive" title="Link to this heading">¶</a></h2>
+<p><strong>Preemptive/Preemption</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--10-input--1" name="tab-set--10" type="radio"><label class="tab-label" for="tab-set--10-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>抢占</strong> 是暂时中断正在执行的 <strong>任务</strong>，并计划稍后恢复执行的行为。这种中断由外部调度程序执行，任务本身不提供任何协助或合作。</p>
+</div>
+<input class="tab-input" id="tab-set--10-input--2" name="tab-set--10" type="radio"><label class="tab-label" for="tab-set--10-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Preemption</strong> is the act of temporarily interrupting an executing <strong>task</strong>,
+with the intention of resuming it at a later time. This interrupt is done by
+an external scheduler with no assistance or cooperation from the task.</p>
+</div>
+</div>
+</section>
+<section id="glossary-preemptive-multitasking">
+<span id="id9"></span><h2>抢占式多任务<a class="headerlink" href="#glossary-preemptive-multitasking" title="Link to this heading">¶</a></h2>
+<p><strong>Preemptive multitasking</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--11-input--1" name="tab-set--11" type="radio"><label class="tab-label" for="tab-set--11-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>抢占式多任务</strong> 涉及使用中断机制，暂停当前正在执行的进程，并调用调度程序来确定下一个应该执行的进程。因此，所有进程在任何给定时间都会获得一定的 CPU 时间。</p>
+<p>CPython 也有 _抢占式多任务_ ：如果一个线程在 Python 2 中连续运行 1000 个字节码指令，或者在 Python 3 中运行 15 毫秒，它会放弃 GIL，允许另一个线程运行。</p>
+</div>
+<input class="tab-input" id="tab-set--11-input--2" name="tab-set--11" type="radio"><label class="tab-label" for="tab-set--11-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Preemptive multitasking</strong> involves the use of an interrupt mechanism which
+suspends the currently executing process and invokes a scheduler to determine
+which process should execute next. Therefore, all processes will get some
+amount of CPU time at any given time.</p>
+<p>CPython also has _preemptive <a href="#id12"><span class="problematic" id="id13">multitasking_</span></a>: If a thread runs
+uninterrupted for 1000 bytecode instructions in Python 2, or runs 15
+milliseconds in Python 3, then it gives up the GIL and another thread may run.</p>
+</div>
+</div>
+</section>
+<section id="glossary-task">
+<span id="id10"></span><h2>任务<a class="headerlink" href="#glossary-task" title="Link to this heading">¶</a></h2>
+<p><strong>Task</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--12-input--1" name="tab-set--12" type="radio"><label class="tab-label" for="tab-set--12-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>任务</strong> 是一个被调度并独立管理的 <strong>协程</strong>。任务是可等待对象，用于并发调度协程。</p>
+</div>
+<input class="tab-input" id="tab-set--12-input--2" name="tab-set--12" type="radio"><label class="tab-label" for="tab-set--12-input--2">英文</label><div class="tab-content docutils container">
+<p>A <strong>task</strong> is a scheduled and independently managed <strong>coroutine</strong>. Tasks are
+awaitable objects used to schedule coroutines concurrently.</p>
+</div>
+</div>
+</section>
+<section id="glossary-thread">
+<span id="id11"></span><h2>线程<a class="headerlink" href="#glossary-thread" title="Link to this heading">¶</a></h2>
+<p><strong>Thread</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--13-input--1" name="tab-set--13" type="radio"><label class="tab-label" for="tab-set--13-input--1">中文</label><div class="tab-content docutils container">
+<p><strong>线程</strong> 是一种让程序将自身分成两个或多个同时（或伪同时）运行的任务的方式。线程和进程在不同操作系统中有所不同，但通常，线程是在进程内的，不同的线程共享同一进程中的资源，而在同一个多任务操作系统中的不同进程之间则不共享资源。</p>
+<p>Python 中线程何时切换？切换取决于上下文。线程可能会被中断（参见 <strong>抢占式多任务</strong>），或表现得像是合作式的（参见 <strong>合作式多任务</strong>）。</p>
+</div>
+<input class="tab-input" id="tab-set--13-input--2" name="tab-set--13" type="radio"><label class="tab-label" for="tab-set--13-input--2">英文</label><div class="tab-content docutils container">
+<p><strong>Threads</strong> are a way for a program to divide (termed &quot;split&quot;) itself into two
+or more simultaneously (or pseudo-simultaneously) running tasks. Threads and
+processes differ from one operating system to another but, in general, a
+thread is contained inside a process and different threads in the same process
+share same resources while different processes in the same multitasking
+operating system do not.</p>
+<p>When do threads switch in Python? The switch depends on the context. The
+threads may be interrupted (see <strong>preemptive multitasking</strong>) or behave
+cooperatively (see <strong>cooperative multitasking</strong>).</p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../../basic_usage.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">基本用法</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="deprecation.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">管理您的弃用内容</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">术语</a><ul>
+<li><a class="reference internal" href="#glossary-concurrency">并发</a></li>
+<li><a class="reference internal" href="#glossary-cooperative-multitasking">协作式多任务</a></li>
+<li><a class="reference internal" href="#glossary-coro">一个协程</a></li>
+<li><a class="reference internal" href="#glossary-coroutine">协程</a></li>
+<li><a class="reference internal" href="#future">Future</a></li>
+<li><a class="reference internal" href="#greenlet">Greenlet</a></li>
+<li><a class="reference internal" href="#green-thread">Green Thread</a></li>
+<li><a class="reference internal" href="#gil">全局解释器锁 (GIL)</a></li>
+<li><a class="reference internal" href="#glossary-parallelism">并行</a></li>
+<li><a class="reference internal" href="#glossary-preemptive">抢占</a></li>
+<li><a class="reference internal" href="#glossary-preemptive-multitasking">抢占式多任务</a></li>
+<li><a class="reference internal" href="#glossary-task">任务</a></li>
+<li><a class="reference internal" href="#glossary-thread">线程</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

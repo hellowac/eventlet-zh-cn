@@ -1,0 +1,603 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="websocket -- Websocket 服务" href="websocket.html" /><link rel="prev" title="semaphore -- 信号量类" href="semaphore.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>timeout -- 通用超时 - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../asyncio/index.html">Eventlet 中的 Asyncio</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">环境变量</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">模块参考</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/modules/timeout.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/modules/timeout.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="timeout">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时<a class="headerlink" href="#timeout" title="Link to this heading">¶</a></h1>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> <strong>-- Universal Timeouts</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.timeout.Timeout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.timeout.</span></span><span class="sig-name descname"><span class="pre">Timeout</span></span><a class="headerlink" href="#eventlet.timeout.Timeout" title="Link to this definition">¶</a></dt>
+<dd><p>在当前 greenthread 中，在 <em>timeout</em> 秒后抛出 <em>exception</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timeout</span> <span class="o">=</span> <span class="n">Timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># 执行代码受限于超时时间</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">timeout</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>当 <em>exception</em> 被省略或为 <code class="docutils literal notranslate"><span class="pre">None</span></code> 时，抛出的是 <code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code> 实例本身：</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Timeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eventlet</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">Timeout</span>: <span class="n">0.1 seconds</span>
+</pre></div>
+</div>
+<p>你可以使用 <code class="docutils literal notranslate"><span class="pre">with</span></code> 语句来增加便利性:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">timeout</span><span class="p">:</span>
+    <span class="k">pass</span> <span class="c1"># ... 代码块 ...</span>
+</pre></div>
+</div>
+<p>这相当于第一个例子中的 try/finally 语句块。</p>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">with</span></code> 语句时还有一个附加功能：如果 <em>exception</em> 为 <code class="docutils literal notranslate"><span class="pre">False</span></code>，超时仍然会被触发，但 <code class="docutils literal notranslate"><span class="pre">with</span></code> 语句会抑制它，因此外部代码块不会看到该异常:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">with</span> <span class="n">Timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mysock</span><span class="o">.</span><span class="n">makefile</span><span class="p">()</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># 5 秒内没有读取到一行</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># 5 秒内读取到了一行</span>
+</pre></div>
+</div>
+<p>作为一个非常特殊的情况，如果 <em>seconds</em> 为 None，计时器不会被调度，只有在你计划直接抛出它时，它才有用。</p>
+<p>有两个关于 Timeout 的注意事项需要了解：</p>
+<ul class="simple">
+<li><p>如果 try/finally 或 with 块中的代码块没有合作性地让出控制权，超时将无法触发。在 Eventlet 中，这通常不会成为问题，但需要注意的是，你不能使用此类超时来处理仅依赖 CPU 的操作。</p></li>
+<li><p>如果代码块捕获了异常且没有重新抛出 <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException`（例如使用</span> <span class="pre">``except:`</span></code>），它将捕获 Timeout 异常，并可能无法按预期中止。</p></li>
+</ul>
+<p>在捕获超时时，请记住，你捕获的可能不是你设置的超时；如果你计划屏蔽一个超时，请始终检查它是否是你设置的同一个实例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timeout</span> <span class="o">=</span> <span class="n">Timeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="n">Timeout</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">timeout</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="c1"># 不是我设置的超时</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.timeout.eventlet.timeout.Timeout.Timeout.cancel">
+<span class="sig-prename descclassname"><span class="pre">Timeout.</span></span><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.timeout.eventlet.timeout.Timeout.Timeout.cancel" title="Link to this definition">¶</a></dt>
+<dd><p>If the timeout is pending, cancel it.  If not using
+Timeouts in <code class="docutils literal notranslate"><span class="pre">with</span></code> statements, always call cancel() in a
+<code class="docutils literal notranslate"><span class="pre">finally</span></code> after the block of code that is getting timed out.
+If not canceled, the timeout will be raised later on, in some
+unexpected section of the application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eventlet.timeout.eventlet.timeout.Timeout.Timeout.pending">
+<span class="sig-prename descclassname"><span class="pre">Timeout.</span></span><span class="sig-name descname"><span class="pre">pending</span></span><a class="headerlink" href="#eventlet.timeout.eventlet.timeout.Timeout.Timeout.pending" title="Link to this definition">¶</a></dt>
+<dd><p>True if the timeout is scheduled to be raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.timeout.with_timeout">
+<span class="sig-prename descclassname"><span class="pre">eventlet.timeout.</span></span><span class="sig-name descname"><span class="pre">with_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.timeout.with_timeout" title="Link to this definition">¶</a></dt>
+<dd><p>为某个（可协作的）函数调用加上超时；如果该函数未在超时前返回，将取消该函数并返回一个标志值。</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> (<em>int 或 float</em>) -- 超时发生前的秒数</p></li>
+<li><p><strong>func</strong> -- 要执行的可调用对象；它必须协作性地让出控制权，否则超时无法触发</p></li>
+<li><p><strong>*args</strong> -- 传递给 <em>func</em> 的位置参数</p></li>
+<li><p><strong>**kwds</strong> -- 传递给 <em>func</em> 的关键字参数</p></li>
+<li><p><strong>timeout_value</strong> -- 超时发生时返回的值（默认抛出 <a class="reference internal" href="../reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a>）</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回类型<span class="colon">:</span></dt>
+<dd class="field-even"><p>如果 <em>func</em> 在 <em>seconds</em> 内返回，则返回 <em>func</em> 的返回值；如果超时且提供了 <cite>timeout_value</cite>，则返回 <cite>timeout_value</cite>，否则抛出 <a class="reference internal" href="../reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a>。</p>
+</dd>
+<dt class="field-odd">抛出<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../basic_usage.html#eventlet.Timeout" title="eventlet.Timeout"><strong>Timeout</strong></a> -- 如果 <em>func</em> 超时且未提供 <code class="docutils literal notranslate"><span class="pre">timeout_value</span></code>。</p>
+</dd>
+<dt class="field-even">Exception<span class="colon">:</span></dt>
+<dd class="field-even"><p>由 <em>func</em> 引发的任何异常</p>
+</dd>
+</dl>
+<p>示例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">with_timeout</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;http://www.google.com/&#39;</span><span class="p">,</span> <span class="n">timeout_value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里 <em>data</em> 要么是 <code class="docutils literal notranslate"><span class="pre">get()</span></code> 调用的结果，要么是如果返回太慢则是空字符串。如果 <code class="docutils literal notranslate"><span class="pre">get()</span></code> 调用引发任何异常，则会传递给调用者。</p>
+</dd></dl>
+
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.timeout.</span></span><span class="sig-name descname"><span class="pre">Timeout</span></span></dt>
+<dd><p>Raises <em>exception</em> in the current greenthread after <em>timeout</em> seconds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timeout</span> <span class="o">=</span> <span class="n">Timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># execution here is limited by timeout</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">timeout</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>When <em>exception</em> is omitted or is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code> instance
+itself is raised:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Timeout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eventlet</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">Timeout</span>: <span class="n">0.1 seconds</span>
+</pre></div>
+</div>
+<p>You can use the  <code class="docutils literal notranslate"><span class="pre">with</span></code> statement for additional convenience:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">timeout</span><span class="p">:</span>
+    <span class="k">pass</span> <span class="c1"># ... code block ...</span>
+</pre></div>
+</div>
+<p>This is equivalent to the try/finally block in the first example.</p>
+<p>There is an additional feature when using the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement: if
+<em>exception</em> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, the timeout is still raised, but the with
+statement suppresses it, so the code outside the with-block won't see it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">with</span> <span class="n">Timeout</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mysock</span><span class="o">.</span><span class="n">makefile</span><span class="p">()</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># 5 seconds passed without reading a line</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="o">...</span> <span class="c1"># a line was read within 5 seconds</span>
+</pre></div>
+</div>
+<p>As a very special case, if <em>seconds</em> is None, the timer is not scheduled,
+and is only useful if you're planning to raise it directly.</p>
+<p>There are two Timeout caveats to be aware of:</p>
+<ul class="simple">
+<li><p>If the code block in the try/finally or with-block never cooperatively yields, the timeout cannot be raised.  In Eventlet, this should rarely be a problem, but be aware that you cannot time out CPU-only operations with this class.</p></li>
+<li><p>If the code block catches and doesn't re-raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="（在 Python v3.13）"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></a>  (for example, with <code class="docutils literal notranslate"><span class="pre">except:</span></code>), then it will catch the Timeout exception, and might not abort as intended.</p></li>
+</ul>
+<p>When catching timeouts, keep in mind that the one you catch may not be the
+one you set; if you plan on silencing a timeout, always check that it's the
+same instance that you set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">timeout</span> <span class="o">=</span> <span class="n">Timeout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="n">Timeout</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">timeout</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="c1"># not my timeout</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Timeout.</span></span><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>If the timeout is pending, cancel it.  If not using
+Timeouts in <code class="docutils literal notranslate"><span class="pre">with</span></code> statements, always call cancel() in a
+<code class="docutils literal notranslate"><span class="pre">finally</span></code> after the block of code that is getting timed out.
+If not canceled, the timeout will be raised later on, in some
+unexpected section of the application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Timeout.</span></span><span class="sig-name descname"><span class="pre">pending</span></span></dt>
+<dd><p>True if the timeout is scheduled to be raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">eventlet.timeout.</span></span><span class="sig-name descname"><span class="pre">with_timeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seconds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Wrap a call to some (yielding) function with a timeout; if the called
+function fails to return before the timeout, cancel it and return a flag
+value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seconds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="（在 Python v3.13）"><em>float</em></a>) -- seconds before timeout occurs</p></li>
+<li><p><strong>func</strong> -- the callable to execute with a timeout; it must cooperatively yield, or else the timeout will not be able to trigger</p></li>
+<li><p><strong>*args</strong> -- positional arguments to pass to <em>func</em></p></li>
+<li><p><strong>**kwds</strong> -- keyword arguments to pass to <em>func</em></p></li>
+<li><p><strong>timeout_value</strong> -- value to return if timeout occurs (by default raises</p></li>
+</ul>
+</dd>
+</dl>
+<p><a class="reference internal" href="../reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回类型<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value returned by <em>func</em> if <em>func</em> returns before <em>seconds</em>, else</p>
+</dd>
+</dl>
+<p><em>timeout_value</em> if provided, else raises <a class="reference internal" href="../reference/api/eventlet.html#eventlet.timeout.Timeout" title="eventlet.timeout.Timeout"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timeout</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">抛出<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="../basic_usage.html#eventlet.Timeout" title="eventlet.Timeout"><strong>Timeout</strong></a> -- if <em>func</em> times out and no <code class="docutils literal notranslate"><span class="pre">timeout_value</span></code> has</p>
+</dd>
+</dl>
+<p>been provided.
+:exception: Any exception raised by <em>func</em></p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">with_timeout</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;http://www.google.com/&#39;</span><span class="p">,</span> <span class="n">timeout_value</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here <em>data</em> is either the result of the <code class="docutils literal notranslate"><span class="pre">get()</span></code> call, or the empty string
+if it took too long to return.  Any exception raised by the <code class="docutils literal notranslate"><span class="pre">get()</span></code> call
+is passed through to the caller.</p>
+</dd></dl>
+
+</div>
+</div>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="websocket.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="semaphore.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a><ul>
+<li><a class="reference internal" href="#eventlet.timeout.Timeout"><code class="docutils literal notranslate"><span class="pre">eventlet.timeout.Timeout</span></code></a><ul>
+<li><a class="reference internal" href="#eventlet.timeout.eventlet.timeout.Timeout.Timeout.cancel"><code class="docutils literal notranslate"><span class="pre">eventlet.timeout.Timeout.Timeout.cancel()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.timeout.eventlet.timeout.Timeout.Timeout.pending"><code class="docutils literal notranslate"><span class="pre">eventlet.timeout.Timeout.Timeout.pending</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eventlet.timeout.with_timeout"><code class="docutils literal notranslate"><span class="pre">eventlet.timeout.with_timeout()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/tabs.js?v=3ee01567"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

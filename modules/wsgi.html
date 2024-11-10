@@ -1,0 +1,650 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="eventlet.green.zmq -- ØMQ support" href="zmq.html" /><link rel="prev" title="websocket -- Websocket 服务" href="websocket.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>wsgi -- WSGI 服务器 - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../asyncio/index.html">Eventlet 中的 Asyncio</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">环境变量</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">模块参考</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/modules/wsgi.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/modules/wsgi.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="wsgi-wsgi">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器<a class="headerlink" href="#wsgi-wsgi" title="Link to this heading">¶</a></h1>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> <strong>-- WSGI server</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<p>wsgi 模块提供了一种简单易用的方法来启动一个基于事件驱动的 <a class="reference external" href="http://wsgi.org/wsgi/">WSGI</a> 服务器。这可以作为应用程序中的嵌入式 Web 服务器，或者作为更完整功能的 Web 服务器包的基础。一个这样的包是 <a class="reference external" href="http://pypi.python.org/pypi/Spawning/">Spawning</a>。</p>
+<p>要启动一个 wsgi 服务器，只需创建一个套接字并调用 <a class="reference internal" href="../reference/api/eventlet.html#eventlet.wsgi.server" title="eventlet.wsgi.server"><code class="xref py py-func docutils literal notranslate"><span class="pre">eventlet.wsgi.server()</span></code></a> 进行启动:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Hello, World!</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span> <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>你可以在文件 <code class="docutils literal notranslate"><span class="pre">examples/wsgi.py</span></code> 中找到这个代码的稍微复杂版本。</p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<p>The wsgi module provides a simple and easy way to start an event-driven
+<a class="reference external" href="http://wsgi.org/wsgi/">WSGI</a> server.  This can serve as an embedded
+web server in an application, or as the basis for a more full-featured web
+server package.  One such package is <a class="reference external" href="http://pypi.python.org/pypi/Spawning/">Spawning</a>.</p>
+<p>To launch a wsgi server, simply create a socket and call <a class="reference internal" href="../reference/api/eventlet.html#eventlet.wsgi.server" title="eventlet.wsgi.server"><code class="xref py py-func docutils literal notranslate"><span class="pre">eventlet.wsgi.server()</span></code></a> with it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Hello, World!</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span> <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can find a slightly more elaborate version of this code in the file
+<code class="docutils literal notranslate"><span class="pre">examples/wsgi.py</span></code>.</p>
+</div>
+</div>
+<dl class="py function" id="module-eventlet.wsgi">
+<dt class="sig sig-object py" id="eventlet.wsgi.format_date_time">
+<span class="sig-prename descclassname"><span class="pre">eventlet.wsgi.</span></span><span class="sig-name descname"><span class="pre">format_date_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.wsgi.format_date_time" title="Link to this definition">¶</a></dt>
+<dd><p>Formats a unix timestamp into an HTTP standard string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="eventlet.wsgi.server">
+<span class="sig-prename descclassname"><span class="pre">eventlet.wsgi.</span></span><span class="sig-name descname"><span class="pre">server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sock</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">environ=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_http_version='HTTP/1.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol=&lt;class</span> <span class="pre">'eventlet.wsgi.HttpProtocol'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_event=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum_chunk_size=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_x_forwarded_for=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_pool=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepalive=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_output=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_format='%(client_ip)s</span> <span class="pre">-</span> <span class="pre">-</span> <span class="pre">[%(date_time)s]</span> <span class="pre">&quot;%(request_line)s&quot;</span> <span class="pre">%(status_code)s</span> <span class="pre">%(body_length)s</span> <span class="pre">%(wall_seconds).6f'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url_length_limit=8192</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">socket_timeout=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capitalize_response_headers=True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.wsgi.server" title="Link to this definition">¶</a></dt>
+<dd><p>Start up a WSGI server handling requests from the supplied server
+socket.  This function loops forever.  The <em>sock</em> object will be
+closed after server exits, but the underlying file descriptor will
+remain open, so if you have a dup() of <em>sock</em>, it will remain usable.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>At the moment <a class="reference internal" href="../reference/api/eventlet.html#eventlet.wsgi.server" title="eventlet.wsgi.server"><code class="xref py py-func docutils literal notranslate"><span class="pre">server()</span></code></a> will always wait for active connections to finish before
+exiting, even if there's an exception raised inside it
+(<em>all</em> exceptions are handled the same way, including <code class="xref py py-class docutils literal notranslate"><span class="pre">greenlet.GreenletExit</span></code>
+and those inheriting from <cite>BaseException</cite>).</p>
+<p>While this may not be an issue normally, when it comes to long running HTTP connections
+(like <a class="reference internal" href="../reference/api/eventlet.html#module-eventlet.websocket" title="eventlet.websocket"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.websocket</span></code></a>) it will become problematic and calling
+<a class="reference internal" href="../reference/api/eventlet.html#eventlet.greenthread.GreenThread.wait" title="eventlet.greenthread.GreenThread.wait"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wait()</span></code></a> on a thread that runs the server may hang,
+even after using <a class="reference internal" href="../reference/api/eventlet.html#eventlet.greenthread.GreenThread.kill" title="eventlet.greenthread.GreenThread.kill"><code class="xref py py-meth docutils literal notranslate"><span class="pre">kill()</span></code></a>, as long
+as there are active connections.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sock</strong> -- Server socket, must be already bound to a port and listening.</p></li>
+<li><p><strong>site</strong> -- WSGI application function.</p></li>
+<li><p><strong>log</strong> -- logging.Logger instance or file-like object that logs should be written to.
+If a Logger instance is supplied, messages are sent to the INFO log level.
+If not specified, sys.stderr is used.</p></li>
+<li><p><strong>environ</strong> -- Additional parameters that go into the environ dictionary of every request.</p></li>
+<li><p><strong>max_size</strong> -- Maximum number of client connections opened at any time by this server.
+Default is 1024.</p></li>
+<li><p><strong>max_http_version</strong> -- Set to &quot;HTTP/1.0&quot; to make the server pretend it only supports HTTP 1.0.
+This can help with applications or clients that don't behave properly using HTTP 1.1.</p></li>
+<li><p><strong>protocol</strong> -- Protocol class.  Deprecated.</p></li>
+<li><p><strong>server_event</strong> -- Used to collect the Server object.  Deprecated.</p></li>
+<li><p><strong>minimum_chunk_size</strong> -- Minimum size in bytes for http chunks.  This can be used to improve
+performance of applications which yield many small strings, though
+using it technically violates the WSGI spec. This can be overridden
+on a per request basis by setting environ['eventlet.minimum_write_chunk_size'].</p></li>
+<li><p><strong>log_x_forwarded_for</strong> -- If True (the default), logs the contents of the x-forwarded-for
+header in addition to the actual client ip address in the 'client_ip' field of the
+log line.</p></li>
+<li><p><strong>custom_pool</strong> -- A custom GreenPool instance which is used to spawn client green threads.
+If this is supplied, max_size is ignored.</p></li>
+<li><p><strong>keepalive</strong> -- If set to False or zero, disables keepalives on the server; all connections
+will be closed after serving one request. If numeric, it will be the timeout used
+when reading the next request.</p></li>
+<li><p><strong>log_output</strong> -- A Boolean indicating if the server will log data or not.</p></li>
+<li><p><strong>log_format</strong> -- A python format string that is used as the template to generate log lines.
+The following values can be formatted into it: client_ip, date_time, request_line,
+status_code, body_length, wall_seconds.  The default is a good example of how to
+use it.</p></li>
+<li><p><strong>url_length_limit</strong> -- A maximum allowed length of the request url. If exceeded, 414 error
+is returned.</p></li>
+<li><p><strong>debug</strong> -- True if the server should send exception tracebacks to the clients on 500 errors.
+If False, the server will respond with empty bodies.</p></li>
+<li><p><strong>socket_timeout</strong> -- Timeout for client connections' socket operations. Default None means
+wait forever.</p></li>
+<li><p><strong>capitalize_response_headers</strong> -- Normalize response headers' names to Foo-Bar.
+Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="ssl">
+<span id="wsgi-ssl"></span><h2>SSL<a class="headerlink" href="#ssl" title="Link to this heading">¶</a></h2>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">中文</label><div class="tab-content docutils container">
+<p>创建一个安全的服务器只比基本示例稍微复杂一些。所需的仅仅是将一个 SSL 包装的套接字传递给 <a class="reference internal" href="../reference/api/eventlet.html#eventlet.wsgi.server" title="eventlet.wsgi.server"><code class="xref py py-func docutils literal notranslate"><span class="pre">server()</span></code></a> 方法:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">wrap_ssl</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span>
+                            <span class="n">certfile</span><span class="o">=</span><span class="s1">&#39;cert.crt&#39;</span><span class="p">,</span>
+                            <span class="n">keyfile</span><span class="o">=</span><span class="s1">&#39;private.key&#39;</span><span class="p">,</span>
+                            <span class="n">server_side</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>应用程序可以通过 <code class="docutils literal notranslate"><span class="pre">env['wsgi.url_scheme']</span></code> 环境变量的值来检测它们是否处于安全服务器内。</p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">英文</label><div class="tab-content docutils container">
+<p>Creating a secure server is only slightly more involved than the base example.  All that's needed is to pass an SSL-wrapped socket to the <a class="reference internal" href="../reference/api/eventlet.html#eventlet.wsgi.server" title="eventlet.wsgi.server"><code class="xref py py-func docutils literal notranslate"><span class="pre">server()</span></code></a> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">wrap_ssl</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span>
+                            <span class="n">certfile</span><span class="o">=</span><span class="s1">&#39;cert.crt&#39;</span><span class="p">,</span>
+                            <span class="n">keyfile</span><span class="o">=</span><span class="s1">&#39;private.key&#39;</span><span class="p">,</span>
+                            <span class="n">server_side</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Applications can detect whether they are inside a secure server by the value of the <code class="docutils literal notranslate"><span class="pre">env['wsgi.url_scheme']</span></code> environment variable.</p>
+</div>
+</div>
+</section>
+<section id="post-hooks">
+<h2>支持 Post Hooks 的非标准扩展<a class="headerlink" href="#post-hooks" title="Link to this heading">¶</a></h2>
+<p><strong>Non-Standard Extension to Support Post Hooks</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">中文</label><div class="tab-content docutils container">
+<p>Eventlet 的 WSGI 服务器支持 WSGI 规范的非标准扩展，其中 <code class="samp docutils literal notranslate"><span class="pre">env['eventlet.posthooks']</span></code> 包含一个 <cite>post hooks</cite> 数组，这些钩子会在完全发送响应后被调用。每个 post hook 是一个 <code class="samp docutils literal notranslate"><span class="pre">(func,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> 元组，<cite>func</cite> 会在 WSGI 环境字典之后依次接收 <cite>args</cite> 和 <cite>kwargs</cite>。</p>
+<p>例如:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg4</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hook called: </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg3</span><span class="p">,</span> <span class="n">kwarg4</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">env</span><span class="p">[</span><span class="s1">&#39;eventlet.posthooks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">hook</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;arg1&#39;</span><span class="p">,</span> <span class="s1">&#39;arg2&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;kwarg3&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;kwarg4&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}))</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Hello, World!</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span> <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>上述代码将在处理每个请求时打印 WSGI 环境以及其他传递的函数参数。</p>
+<p>Post hooks 在需要在响应完全发送给客户端后执行代码时非常有用（或者当客户端提前断开连接时）。一个例子是更准确地记录带宽使用情况，因为客户端断开连接时使用的带宽比实际的 Content-Length 要少。</p>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">英文</label><div class="tab-content docutils container">
+<p>Eventlet's WSGI server supports a non-standard extension to the WSGI
+specification where <code class="samp docutils literal notranslate"><span class="pre">env['eventlet.posthooks']</span></code> contains an array of
+<cite>post hooks</cite> that will be called after fully sending a response. Each post hook
+is a tuple of <code class="samp docutils literal notranslate"><span class="pre">(func,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> and the <cite>func</cite> will be called with
+the WSGI environment dictionary, followed by the <cite>args</cite> and then the <cite>kwargs</cite>
+in the post hook.</p>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg3</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg4</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hook called: </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">kwarg3</span><span class="p">,</span> <span class="n">kwarg4</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">env</span><span class="p">[</span><span class="s1">&#39;eventlet.posthooks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">hook</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;arg1&#39;</span><span class="p">,</span> <span class="s1">&#39;arg2&#39;</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;kwarg3&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;kwarg4&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}))</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;Hello, World!</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">]</span>
+
+<span class="n">wsgi</span><span class="o">.</span><span class="n">server</span><span class="p">(</span><span class="n">eventlet</span><span class="o">.</span><span class="n">listen</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">8090</span><span class="p">)),</span> <span class="n">hello_world</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above code will print the WSGI environment and the other passed function
+arguments for every request processed.</p>
+<p>Post hooks are useful when code needs to be executed after a response has been
+fully sent to the client (or when the client disconnects early). One example is
+for more accurate logging of bandwidth used, as client disconnects use less
+bandwidth than the actual Content-Length.</p>
+</div>
+</div>
+</section>
+<section id="continue">
+<h2>“100 Continue”响应标头<a class="headerlink" href="#continue" title="Link to this heading">¶</a></h2>
+<p><strong>&quot;100 Continue&quot; Response Headers</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">中文</label><div class="tab-content docutils container">
+<p>Eventlet 的 WSGI 服务器支持在 HTTP &quot;100 Continue&quot; 临时响应中发送（可选）头部。这在 WSGI 服务器希望将 PUT 请求作为单一的 HTTP 请求/响应对完成时非常有用，同时还希望在同一个 HTTP 事务中与客户端进行通信。一个例子是，HTTP 服务器可能希望通过头部向客户端传递关于其能够接受的数据负载特征的提示。例如，HTTP 服务器可能会在随附的 &quot;100 Continue&quot; 响应中通过头部传递一个提示，表示它是否能够接受加密的数据负载，从而使客户端能够在开始发送数据之前做出加密与未加密的选择。</p>
+<p>这对于 WSGI 服务器来说是有效的，因为 WSGI 规范要求 HTTP 的 expect/continue 机制（PEP333）。</p>
+<p>要定义 &quot;100 Continue&quot; 响应头，可以调用 <code class="xref py py-func docutils literal notranslate"><span class="pre">set_hundred_continue_response_header()</span></code> 在 <code class="samp docutils literal notranslate"><span class="pre">env['wsgi.input']</span></code> 上，如下所示的示例:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">wsgi_app</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="c1"># 定义 &quot;100 Continue&quot; 响应头</span>
+    <span class="n">env</span><span class="p">[</span><span class="s1">&#39;wsgi.input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_hundred_continue_response_headers</span><span class="p">(</span>
+        <span class="p">[(</span><span class="s1">&#39;Hundred-Continue-Header-1&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Hundred-Continue-Header-k&#39;</span><span class="p">,</span> <span class="s1">&#39;Hk&#39;</span><span class="p">)])</span>
+    <span class="c1"># 以下的 read() 会导致向客户端发送 &quot;100 Continue&quot; 响应。</span>
+    <span class="c1"># 头部 &#39;Hundred-Continue-Header-1&#39; 和 &#39;Hundred-Continue-Header-K&#39; 会随着响应</span>
+    <span class="c1"># 在 &quot;HTTP/1.1 100 Continue\r\n&quot; 状态行之后发送</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">env</span><span class="p">[</span><span class="s1">&#39;wsgi.input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)))])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">text</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>您可以在文件 <code class="docutils literal notranslate"><span class="pre">tests/wsgi_test.py</span></code> 中找到一个更详细的示例，函数 <code class="xref py py-func docutils literal notranslate"><span class="pre">test_024a_expect_100_continue_with_headers()</span></code>。</p>
+<p>根据 HTTP RFC 7231（<a class="reference external" href="http://tools.ietf.org/html/rfc7231#section-6.2">http://tools.ietf.org/html/rfc7231#section-6.2</a>），客户端需要能够处理一个或多个 100 continue 响应。一个典型的使用案例可能是一个用户协议，其中服务器可能希望使用 100-continue 响应来通知客户端它正在处理请求，客户端不应超时。</p>
+<p>为了支持多个 100-continue 响应，eventlet wsgi 模块导出了 API <code class="xref py py-func docutils literal notranslate"><span class="pre">send_hundred_continue_response()</span></code>。</p>
+<p>对于分块和非分块的 HTTP 场景，示例使用案例包含在 wsgi 测试用例 <code class="docutils literal notranslate"><span class="pre">tests/wsgi_test.py</span></code> 中，函数 <code class="xref py py-func docutils literal notranslate"><span class="pre">test_024b_expect_100_continue_with_headers_multiple_chunked()</span></code> 和 <code class="xref py py-func docutils literal notranslate"><span class="pre">test_024c_expect_100_continue_with_headers_multiple_nonchunked()</span></code>。</p>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">英文</label><div class="tab-content docutils container">
+<p>Eventlet's WSGI server supports sending (optional) headers with HTTP &quot;100 Continue&quot;
+provisional responses.  This is useful in such cases where a WSGI server expects
+to complete a PUT request as a single HTTP request/response pair, and also wants to
+communicate back to client as part of the same HTTP transaction.  An example is
+where the HTTP server wants to pass hints back to the client about characteristics
+of data payload it can accept.  As an example, an HTTP server may pass a hint in a
+header the accompanying &quot;100 Continue&quot; response to the client indicating it can or
+cannot accept encrypted data payloads, and thus client can make the encrypted vs
+unencrypted decision before starting to send the data).</p>
+<p>This works well for WSGI servers as the WSGI specification mandates HTTP
+expect/continue mechanism (PEP333).</p>
+<p>To define the &quot;100 Continue&quot; response headers, one may call
+<code class="xref py py-func docutils literal notranslate"><span class="pre">set_hundred_continue_response_header()</span></code> on <code class="samp docutils literal notranslate"><span class="pre">env['wsgi.input']</span></code>
+as shown in the following example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">wsgi</span>
+<span class="kn">import</span> <span class="nn">eventlet</span>
+
+<span class="k">def</span> <span class="nf">wsgi_app</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="c1"># Define &quot;100 Continue&quot; response headers</span>
+    <span class="n">env</span><span class="p">[</span><span class="s1">&#39;wsgi.input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_hundred_continue_response_headers</span><span class="p">(</span>
+        <span class="p">[(</span><span class="s1">&#39;Hundred-Continue-Header-1&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Hundred-Continue-Header-k&#39;</span><span class="p">,</span> <span class="s1">&#39;Hk&#39;</span><span class="p">)])</span>
+    <span class="c1"># The following read() causes &quot;100 Continue&quot; response to</span>
+    <span class="c1"># the client.  Headers &#39;Hundred-Continue-Header-1&#39; and</span>
+    <span class="c1"># &#39;Hundred-Continue-Header-K&#39; are sent with the response</span>
+    <span class="c1"># following the &quot;HTTP/1.1 100 Continue\r\n&quot; status line</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">env</span><span class="p">[</span><span class="s1">&#39;wsgi.input&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="s1">&#39;200 OK&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)))])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">text</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You can find a more elaborate example in the file:
+<code class="docutils literal notranslate"><span class="pre">tests/wsgi_test.py</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">test_024a_expect_100_continue_with_headers()</span></code>.</p>
+<p>Per HTTP RFC 7231 (<a class="reference external" href="http://tools.ietf.org/html/rfc7231#section-6.2">http://tools.ietf.org/html/rfc7231#section-6.2</a>) a client is
+required to be able to process one or more 100 continue responses.  A sample
+use case might be a user protocol where the server may want to use a 100-continue
+response to indicate to a client that it is working on a request and the
+client should not timeout.</p>
+<p>To support multiple 100-continue responses, evenlet wsgi module exports
+the API <code class="xref py py-func docutils literal notranslate"><span class="pre">send_hundred_continue_response()</span></code>.</p>
+<p>Sample use cases for chunked and non-chunked HTTP scenarios are included
+in the wsgi test case <code class="docutils literal notranslate"><span class="pre">tests/wsgi_test.py</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">test_024b_expect_100_continue_with_headers_multiple_chunked()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">test_024c_expect_100_continue_with_headers_multiple_nonchunked()</span></code>.</p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="zmq.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="websocket.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a><ul>
+<li><a class="reference internal" href="#eventlet.wsgi.format_date_time"><code class="docutils literal notranslate"><span class="pre">format_date_time()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.wsgi.server"><code class="docutils literal notranslate"><span class="pre">server()</span></code></a></li>
+<li><a class="reference internal" href="#ssl">SSL</a></li>
+<li><a class="reference internal" href="#post-hooks">支持 Post Hooks 的非标准扩展</a></li>
+<li><a class="reference internal" href="#continue">“100 Continue”响应标头</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/tabs.js?v=3ee01567"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

@@ -1,0 +1,1571 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="如何为 Eventlet 做出贡献" href="../contribute.html" /><link rel="prev" title="wsgi -- WSGI 服务器" href="wsgi.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>eventlet.green.zmq -- ØMQ support - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../asyncio/index.html">Eventlet 中的 Asyncio</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/compatibility.html">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../asyncio/guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">环境变量</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../modules.html">模块参考</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/modules/zmq.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/modules/zmq.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="eventlet-green-zmq-omq-support">
+<h1><a class="reference internal" href="../reference/api/eventlet.green.html#module-eventlet.green.zmq" title="eventlet.green.zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code></a> -- ØMQ support<a class="headerlink" href="#eventlet-green-zmq-omq-support" title="Link to this heading">¶</a></h1>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<p><a class="reference internal" href="#module-zmq" title="zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyzmq</span></code></a> <a class="footnote-reference brackets" href="#id70" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> 是一个用 Cython <a class="footnote-reference brackets" href="#id72" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> 编写的与 C++ ØMQ <a class="footnote-reference brackets" href="#id71" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> 库绑定的 Python 库。
+<a class="reference internal" href="../reference/api/eventlet.green.html#module-eventlet.green.zmq" title="eventlet.green.zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code></a> 是 <cite>pyzmq</cite> 的 greenthread 感知版本。</p>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<p><a class="reference internal" href="#module-zmq" title="zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyzmq</span></code></a> <a class="footnote-reference brackets" href="#id70" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> is a python binding to the C++ ØMQ <a class="footnote-reference brackets" href="#id71" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> library written in Cython <a class="footnote-reference brackets" href="#id72" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.
+<a class="reference internal" href="../reference/api/eventlet.green.html#module-eventlet.green.zmq" title="eventlet.green.zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code></a> is greenthread aware version of <cite>pyzmq</cite>.</p>
+</div>
+</div>
+<p id="module-eventlet.green.zmq">The <a class="reference internal" href="#module-zmq" title="zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">zmq</span></code></a> module wraps the <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket" title="eventlet.green.zmq.Socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">Socket</span></code></a> and <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Context" title="eventlet.green.zmq.Context"><code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></a>
+found in <a class="reference internal" href="#module-zmq" title="zmq"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyzmq</span></code></a> to be non blocking.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Context">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.green.zmq.</span></span><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Context" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.green.zmq.</span></span><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Context</span></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.green.zmq.</span></span><span class="sig-name descname"><span class="pre">Context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Context</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Context</span></code></p>
+<p>Subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">zmq.Context</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Context.socket">
+<span class="sig-name descname"><span class="pre">socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">socket_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Context.socket" title="Link to this definition">¶</a></dt>
+<dd><p>Overridden method to ensure that the green version of socket is used</p>
+<p>Behaves the same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">zmq.Context.socket()</span></code>, but ensures
+that a <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket" title="eventlet.green.zmq.Socket"><code class="xref py py-class docutils literal notranslate"><span class="pre">Socket</span></code></a> with all of its send and recv methods set to be
+non-blocking is returned</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">eventlet.green.zmq.</span></span><span class="sig-name descname"><span class="pre">Socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">socket_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket" title="Link to this definition">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">Socket</span></code></p>
+<p>Green version of :class:<code class="docutils literal notranslate"><span class="pre">zmq.core.socket.Socket</span></code>.</p>
+<dl class="simple">
+<dt>The following three methods are always overridden:</dt><dd><ul class="simple">
+<li><p>send</p></li>
+<li><p>recv</p></li>
+<li><p>getsockopt</p></li>
+</ul>
+</dd>
+</dl>
+<p>To ensure that the <code class="docutils literal notranslate"><span class="pre">zmq.NOBLOCK</span></code> flag is set and that sending or receiving
+is deferred to the hub (using :func:<code class="docutils literal notranslate"><span class="pre">eventlet.hubs.trampoline</span></code>) if a
+<code class="docutils literal notranslate"><span class="pre">zmq.EAGAIN</span></code> (retry) error is raised.</p>
+<dl class="simple">
+<dt>For some socket types, the following methods are also overridden:</dt><dd><ul class="simple">
+<li><p>send_multipart</p></li>
+<li><p>recv_multipart</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv">
+<span class="sig-name descname"><span class="pre">recv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a message.</p>
+<p>With flags=NOBLOCK, this raises <code class="xref py py-class docutils literal notranslate"><span class="pre">ZMQError</span></code> if no messages have
+arrived; otherwise, this waits until a message arrives.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">Poller</span></code> for more general non-blocking I/O.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>0 or NOBLOCK.</p>
+</dd>
+<dt>copy<span class="classifier">bool</span></dt><dd><p>Should the message be received in a copying or non-copying manner?
+If False a Frame object is returned, if True a string copy of
+message is returned.</p>
+</dd>
+<dt>track<span class="classifier">bool</span></dt><dd><p>Should the message be tracked for notification that ZMQ has
+finished with it? (ignored if copy=True)</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>msg<span class="classifier">bytes or Frame</span></dt><dd><p>The received message frame.  If <cite>copy</cite> is False, then it will be a Frame,
+otherwise it will be bytes.</p>
+</dd>
+</dl>
+</section>
+<section id="raises">
+<h2>Raises<a class="headerlink" href="#raises" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons zmq_msg_recv might fail (including if
+NOBLOCK is set and no new messages have arrived).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send" title="Link to this definition">¶</a></dt>
+<dd><p>Send a single zmq message frame on this socket.</p>
+<p>This queues the message to be sent by the IO thread at a later time.</p>
+<p>With flags=NOBLOCK, this raises <code class="xref py py-class docutils literal notranslate"><span class="pre">ZMQError</span></code> if the queue is full;
+otherwise, this waits until space is available.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">Poller</span></code> for more general non-blocking I/O.</p>
+<section id="id7">
+<h2>Parameters<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>data<span class="classifier">bytes, Frame, memoryview</span></dt><dd><p>The content of the message. This can be any object that provides
+the Python buffer API (i.e. <cite>memoryview(data)</cite> can be called).</p>
+</dd>
+<dt>flags<span class="classifier">int</span></dt><dd><p>0, NOBLOCK, SNDMORE, or NOBLOCK|SNDMORE.</p>
+</dd>
+<dt>copy<span class="classifier">bool</span></dt><dd><p>Should the message be sent in a copying or non-copying manner.</p>
+</dd>
+<dt>track<span class="classifier">bool</span></dt><dd><p>Should the message be tracked for notification that ZMQ has
+finished with it? (ignored if copy=True)</p>
+</dd>
+<dt>routing_id<span class="classifier">int</span></dt><dd><p>For use with SERVER sockets</p>
+</dd>
+<dt>group<span class="classifier">str</span></dt><dd><p>For use with RADIO sockets</p>
+</dd>
+</dl>
+</section>
+<section id="id8">
+<h2>Returns<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>None<span class="classifier">if <cite>copy</cite> or not track</span></dt><dd><p>None if message was sent, raises an exception otherwise.</p>
+</dd>
+<dt>MessageTracker<span class="classifier">if track and not copy</span></dt><dd><p>a MessageTracker object, whose <cite>done</cite> property will
+be False until the send is completed.</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h2>Raises<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If a unicode object is passed</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>track=True</cite>, but an untracked Frame is passed.</p>
+</dd>
+<dt>ZMQError</dt><dd><p>If the send does not succeed for any reason (including
+if NOBLOCK is set and the outgoing queue is full).</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">在 17.0 版本发生变更: </span>DRAFT support for routing_id and group arguments.</p>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.bind">
+<span class="sig-name descname"><span class="pre">bind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.bind" title="Link to this definition">¶</a></dt>
+<dd><p>Bind the socket to an address.</p>
+<p>This causes the socket to listen on a network port. Sockets on the
+other side of this connection will use <code class="docutils literal notranslate"><span class="pre">Socket.connect(addr)</span></code> to
+connect to this socket.</p>
+<p>Returns a context manager which will call unbind on exit.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 20.0: </span>Can be used as a context manager.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 26.0: </span>binding to port 0 can be used as a context manager
+for binding to a random port.
+The URL can be retrieved as <cite>socket.last_endpoint</cite>.</p>
+</div>
+<section id="id10">
+<h2>Parameters<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The address string. This has the form 'protocol://interface:port',
+for example 'tcp://127.0.0.1:5555'. Protocols supported include
+tcp, udp, pgm, epgm, inproc and ipc. If the address is unicode, it is
+encoded to utf-8 first.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.bind_to_random_port">
+<span class="sig-name descname"><span class="pre">bind_to_random_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">49152</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65536</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.bind_to_random_port" title="Link to this definition">¶</a></dt>
+<dd><p>Bind this socket to a random port in a range.</p>
+<p>If the port range is unspecified, the system will choose the port.</p>
+<section id="id11">
+<h2>Parameters<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The address string without the port to pass to <code class="docutils literal notranslate"><span class="pre">Socket.bind()</span></code>.</p>
+</dd>
+<dt>min_port<span class="classifier">int, optional</span></dt><dd><p>The minimum port in the range of ports to try (inclusive).</p>
+</dd>
+<dt>max_port<span class="classifier">int, optional</span></dt><dd><p>The maximum port in the range of ports to try (exclusive).</p>
+</dd>
+<dt>max_tries<span class="classifier">int, optional</span></dt><dd><p>The maximum number of bind attempts to make.</p>
+</dd>
+</dl>
+</section>
+<section id="id12">
+<h2>Returns<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>port<span class="classifier">int</span></dt><dd><p>The port the socket was bound to.</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h2>Raises<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQBindError</dt><dd><p>if <cite>max_tries</cite> reached before successful bind</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.close" title="Link to this definition">¶</a></dt>
+<dd><p>Close the socket.</p>
+<p>If linger is specified, LINGER sockopt will be set prior to closing.</p>
+<p>Note: closing a zmq Socket may not close the underlying sockets
+if there are undelivered messages.
+Only after all messages are delivered or discarded by reaching the socket's LINGER timeout
+(default: forever)
+will the underlying sockets be closed.</p>
+<p>This can be called to close the socket by hand. If this is not
+called, the socket will automatically be closed when it is
+garbage collected,
+in which case you may see a ResourceWarning about the unclosed socket.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.closed">
+<span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.closed" title="Link to this definition">¶</a></dt>
+<dd><p>Whether the socket is closed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Connect to a remote 0MQ socket.</p>
+<p>Returns a context manager which will call disconnect on exit.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 20.0: </span>Can be used as a context manager.</p>
+</div>
+<section id="id14">
+<h2>Parameters<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The address string. This has the form 'protocol://interface:port',
+for example 'tcp://127.0.0.1:5555'. Protocols supported are
+tcp, udp, pgm, inproc and ipc. If the address is unicode, it is
+encoded to utf-8 first.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.disable_monitor">
+<span class="sig-name descname"><span class="pre">disable_monitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.disable_monitor" title="Link to this definition">¶</a></dt>
+<dd><p>Shutdown the PAIR socket (created using get_monitor_socket)
+that is serving socket events.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 14.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.disconnect" title="Link to this definition">¶</a></dt>
+<dd><p>Disconnect from a remote 0MQ socket (undoes a call to connect).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version libzmq-3.2.</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 13.0.</span></p>
+</div>
+<section id="id15">
+<h2>Parameters<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The address string. This has the form 'protocol://interface:port',
+for example 'tcp://127.0.0.1:5555'. Protocols supported are
+tcp, udp, pgm, inproc and ipc. If the address is unicode, it is
+encoded to utf-8 first.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.fileno">
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.fileno" title="Link to this definition">¶</a></dt>
+<dd><p>Return edge-triggered file descriptor for this socket.</p>
+<p>This is a read-only edge-triggered file descriptor for both read and write events on this socket.
+It is important that all available events be consumed when an event is detected,
+otherwise the read event will not trigger again.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 17.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C.int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.get" title="Link to this definition">¶</a></dt>
+<dd><p>Get the value of a socket option.</p>
+<p>See the 0MQ API documentation for details on specific options.</p>
+<section id="id16">
+<h2>Parameters<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to get.  Available values will depend on your
+version of libzmq.  Examples include:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="n">HWM</span><span class="p">,</span> <span class="n">LINGER</span><span class="p">,</span> <span class="n">FD</span><span class="p">,</span> <span class="n">EVENTS</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="id17">
+<h2>Returns<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>optval<span class="classifier">int or bytes</span></dt><dd><p>The value of the option as a bytestring or int.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.get_hwm">
+<span class="sig-name descname"><span class="pre">get_hwm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.get_hwm" title="Link to this definition">¶</a></dt>
+<dd><p>Get the High Water Mark.</p>
+<p>On libzmq ≥ 3, this gets SNDHWM if available, otherwise RCVHWM</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.get_monitor_socket">
+<span class="sig-name descname"><span class="pre">get_monitor_socket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_SocketType</span></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.get_monitor_socket" title="Link to this definition">¶</a></dt>
+<dd><p>Return a connected PAIR socket ready to receive the event notifications.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version libzmq-4.0.</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 14.0.</span></p>
+</div>
+<section id="id18">
+<h2>Parameters<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>events<span class="classifier">int</span></dt><dd><p>default: <cite>zmq.EVENT_ALL</cite>
+The bitmask defining which events are wanted.</p>
+</dd>
+<dt>addr<span class="classifier">str</span></dt><dd><p>The optional endpoint for the monitoring sockets.</p>
+</dd>
+</dl>
+</section>
+<section id="id19">
+<h2>Returns<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>socket<span class="classifier">zmq.Socket</span></dt><dd><p>The PAIR socket, connected and ready to receive messages.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Get the value of a socket option.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id20">
+<h2>Parameters<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to retrieve.</p>
+</dd>
+</dl>
+</section>
+<section id="id21">
+<h2>Returns<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option as a unicode string.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.getsockopt">
+<span class="sig-name descname"><span class="pre">getsockopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.getsockopt" title="Link to this definition">¶</a></dt>
+<dd><p>Get the value of a socket option.</p>
+<p>See the 0MQ API documentation for details on specific options.</p>
+<section id="id22">
+<h2>Parameters<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to get.  Available values will depend on your
+version of libzmq.  Examples include:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zmq</span><span class="o">.</span><span class="n">IDENTITY</span><span class="p">,</span> <span class="n">HWM</span><span class="p">,</span> <span class="n">LINGER</span><span class="p">,</span> <span class="n">FD</span><span class="p">,</span> <span class="n">EVENTS</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h2>Returns<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>optval<span class="classifier">int or bytes</span></dt><dd><p>The value of the option as a bytestring or int.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.getsockopt_string">
+<span class="sig-name descname"><span class="pre">getsockopt_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.getsockopt_string" title="Link to this definition">¶</a></dt>
+<dd><p>Get the value of a socket option.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id24">
+<h2>Parameters<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to retrieve.</p>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h2>Returns<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option as a unicode string.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.getsockopt_unicode">
+<span class="sig-name descname"><span class="pre">getsockopt_unicode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.getsockopt_unicode" title="Link to this definition">¶</a></dt>
+<dd><p>Get the value of a socket option.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id26">
+<h2>Parameters<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to retrieve.</p>
+</dd>
+</dl>
+</section>
+<section id="id27">
+<h2>Returns<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option as a unicode string.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.hwm">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hwm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></em><a class="headerlink" href="#eventlet.green.zmq.Socket.hwm" title="Link to this definition">¶</a></dt>
+<dd><p>Property for High Water Mark.</p>
+<p>Setting hwm sets both SNDHWM and RCVHWM as appropriate.
+It gets SNDHWM if available, otherwise RCVHWM.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.join">
+<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.join" title="Link to this definition">¶</a></dt>
+<dd><p>Join a RADIO-DISH group</p>
+<p>Only for DISH sockets.</p>
+<p>libzmq and pyzmq must have been built with ZMQ_BUILD_DRAFT_API</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 17.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.leave">
+<span class="sig-name descname"><span class="pre">leave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.leave" title="Link to this definition">¶</a></dt>
+<dd><p>Leave a RADIO-DISH group</p>
+<p>Only for DISH sockets.</p>
+<p>libzmq and pyzmq must have been built with ZMQ_BUILD_DRAFT_API</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 17.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.monitor">
+<span class="sig-name descname"><span class="pre">monitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C.int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">65535</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.monitor" title="Link to this definition">¶</a></dt>
+<dd><p>Start publishing socket events on inproc.
+See libzmq docs for zmq_monitor for details.</p>
+<p>While this function is available from libzmq 3.2,
+pyzmq cannot parse monitor messages from libzmq prior to 4.0.</p>
+<section id="id28">
+<h2>Parameters<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The inproc url used for monitoring. Passing None as
+the addr will cause an existing socket monitor to be
+deregistered.</p>
+</dd>
+<dt>events<span class="classifier">int</span></dt><dd><p>default: zmq.EVENT_ALL
+The zmq event bitmask for which events will be sent to the monitor.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">&lt;PollEvent.POLLIN:</span> <span class="pre">1&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.poll" title="Link to this definition">¶</a></dt>
+<dd><p>Poll the socket for events.</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">Poller</span></code> to wait for multiple sockets at once.</p>
+<section id="id29">
+<h2>Parameters<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>timeout<span class="classifier">int</span></dt><dd><p>The timeout (in milliseconds) to wait for an event. If unspecified
+(or specified None), will wait forever for an event.</p>
+</dd>
+<dt>flags<span class="classifier">int</span></dt><dd><p>default: POLLIN.
+POLLIN, POLLOUT, or POLLIN|POLLOUT. The event flags to poll for.</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h2>Returns<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>event_mask<span class="classifier">int</span></dt><dd><p>The poll event mask (POLLIN, POLLOUT),
+0 if the timeout was reached without an event.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">recv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a message.</p>
+<p>With flags=NOBLOCK, this raises <code class="xref py py-class docutils literal notranslate"><span class="pre">ZMQError</span></code> if no messages have
+arrived; otherwise, this waits until a message arrives.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">Poller</span></code> for more general non-blocking I/O.</p>
+<section id="id31">
+<h2>Parameters<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>0 or NOBLOCK.</p>
+</dd>
+<dt>copy<span class="classifier">bool</span></dt><dd><p>Should the message be received in a copying or non-copying manner?
+If False a Frame object is returned, if True a string copy of
+message is returned.</p>
+</dd>
+<dt>track<span class="classifier">bool</span></dt><dd><p>Should the message be tracked for notification that ZMQ has
+finished with it? (ignored if copy=True)</p>
+</dd>
+</dl>
+</section>
+<section id="id32">
+<h2>Returns<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>msg<span class="classifier">bytes or Frame</span></dt><dd><p>The received message frame.  If <cite>copy</cite> is False, then it will be a Frame,
+otherwise it will be bytes.</p>
+</dd>
+</dl>
+</section>
+<section id="id33">
+<h2>Raises<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons zmq_msg_recv might fail (including if
+NOBLOCK is set and no new messages have arrived).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_json">
+<span class="sig-name descname"><span class="pre">recv_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_json" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a Python object as a message using json to serialize.</p>
+<p>Keyword arguments are passed on to json.loads</p>
+<section id="id34">
+<h2>Parameters<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="id35">
+<h2>Returns<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>obj<span class="classifier">Python object</span></dt><dd><p>The Python object that arrives as a message.</p>
+</dd>
+</dl>
+</section>
+<section id="id36">
+<h2>Raises<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_multipart">
+<span class="sig-name descname"><span class="pre">recv_multipart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_multipart" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a multipart message as a list of bytes or Frame objects</p>
+<section id="id37">
+<h2>Parameters<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+<dt>copy<span class="classifier">bool, optional</span></dt><dd><p>Should the message frame(s) be received in a copying or non-copying manner?
+If False a Frame object is returned for each part, if True a copy of
+the bytes is made for each frame.</p>
+</dd>
+<dt>track<span class="classifier">bool, optional</span></dt><dd><p>Should the message frame(s) be tracked for notification that ZMQ has
+finished with it? (ignored if copy=True)</p>
+</dd>
+</dl>
+</section>
+<section id="id38">
+<h2>Returns<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>msg_parts<span class="classifier">list</span></dt><dd><p>A list of frames in the multipart message; either Frames or bytes,
+depending on <cite>copy</cite>.</p>
+</dd>
+</dl>
+</section>
+<section id="id39">
+<h2>Raises<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_pyobj">
+<span class="sig-name descname"><span class="pre">recv_pyobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_pyobj" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a Python object as a message using pickle to serialize.</p>
+<section id="id40">
+<h2>Parameters<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="id41">
+<h2>Returns<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>obj<span class="classifier">Python object</span></dt><dd><p>The Python object that arrives as a message.</p>
+</dd>
+</dl>
+</section>
+<section id="id42">
+<h2>Raises<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_serialized">
+<span class="sig-name descname"><span class="pre">recv_serialized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deserialize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_serialized" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a message with a custom deserialization function.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 17.</span></p>
+</div>
+<section id="id43">
+<h2>Parameters<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>deserialize<span class="classifier">callable</span></dt><dd><p>The deserialization function to use.
+deserialize will be called with one argument: the list of frames
+returned by recv_multipart() and can return any object.</p>
+</dd>
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+<dt>copy<span class="classifier">bool, optional</span></dt><dd><p>Whether to recv bytes or Frame objects.</p>
+</dd>
+</dl>
+</section>
+<section id="id44">
+<h2>Returns<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>obj<span class="classifier">object</span></dt><dd><p>The object returned by the deserialization function.</p>
+</dd>
+</dl>
+</section>
+<section id="id45">
+<h2>Raises<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_string">
+<span class="sig-name descname"><span class="pre">recv_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_string" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a unicode string, as sent by send_string.</p>
+<section id="id46">
+<h2>Parameters<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used</p>
+</dd>
+</dl>
+</section>
+<section id="id47">
+<h2>Returns<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>s<span class="classifier">str</span></dt><dd><p>The Python unicode string that arrives as encoded bytes.</p>
+</dd>
+</dl>
+</section>
+<section id="id48">
+<h2>Raises<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.recv_unicode">
+<span class="sig-name descname"><span class="pre">recv_unicode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.recv_unicode" title="Link to this definition">¶</a></dt>
+<dd><p>Receive a unicode string, as sent by send_string.</p>
+<section id="id49">
+<h2>Parameters<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a>.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used</p>
+</dd>
+</dl>
+</section>
+<section id="id50">
+<h2>Returns<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>s<span class="classifier">str</span></dt><dd><p>The Python unicode string that arrives as encoded bytes.</p>
+</dd>
+</dl>
+</section>
+<section id="id51">
+<h2>Raises<a class="headerlink" href="#id51" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>ZMQError</dt><dd><p>for any of the reasons <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.recv" title="eventlet.green.zmq.Socket.recv"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a> might fail</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id52">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id52" title="Link to this definition">¶</a></dt>
+<dd><p>Send a single zmq message frame on this socket.</p>
+<p>This queues the message to be sent by the IO thread at a later time.</p>
+<p>With flags=NOBLOCK, this raises <code class="xref py py-class docutils literal notranslate"><span class="pre">ZMQError</span></code> if the queue is full;
+otherwise, this waits until space is available.
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">Poller</span></code> for more general non-blocking I/O.</p>
+<section id="id53">
+<h2>Parameters<a class="headerlink" href="#id53" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>data<span class="classifier">bytes, Frame, memoryview</span></dt><dd><p>The content of the message. This can be any object that provides
+the Python buffer API (i.e. <cite>memoryview(data)</cite> can be called).</p>
+</dd>
+<dt>flags<span class="classifier">int</span></dt><dd><p>0, NOBLOCK, SNDMORE, or NOBLOCK|SNDMORE.</p>
+</dd>
+<dt>copy<span class="classifier">bool</span></dt><dd><p>Should the message be sent in a copying or non-copying manner.</p>
+</dd>
+<dt>track<span class="classifier">bool</span></dt><dd><p>Should the message be tracked for notification that ZMQ has
+finished with it? (ignored if copy=True)</p>
+</dd>
+<dt>routing_id<span class="classifier">int</span></dt><dd><p>For use with SERVER sockets</p>
+</dd>
+<dt>group<span class="classifier">str</span></dt><dd><p>For use with RADIO sockets</p>
+</dd>
+</dl>
+</section>
+<section id="id54">
+<h2>Returns<a class="headerlink" href="#id54" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>None<span class="classifier">if <cite>copy</cite> or not track</span></dt><dd><p>None if message was sent, raises an exception otherwise.</p>
+</dd>
+<dt>MessageTracker<span class="classifier">if track and not copy</span></dt><dd><p>a MessageTracker object, whose <cite>done</cite> property will
+be False until the send is completed.</p>
+</dd>
+</dl>
+</section>
+<section id="id55">
+<h2>Raises<a class="headerlink" href="#id55" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If a unicode object is passed</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>track=True</cite>, but an untracked Frame is passed.</p>
+</dd>
+<dt>ZMQError</dt><dd><p>If the send does not succeed for any reason (including
+if NOBLOCK is set and the outgoing queue is full).</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">在 17.0 版本发生变更: </span>DRAFT support for routing_id and group arguments.</p>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_json">
+<span class="sig-name descname"><span class="pre">send_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_json" title="Link to this definition">¶</a></dt>
+<dd><p>Send a Python object as a message using json to serialize.</p>
+<p>Keyword arguments are passed on to json.dumps</p>
+<section id="id56">
+<h2>Parameters<a class="headerlink" href="#id56" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>obj<span class="classifier">Python object</span></dt><dd><p>The Python object to send</p>
+</dd>
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a></p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_multipart">
+<span class="sig-name descname"><span class="pre">send_multipart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_parts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_multipart" title="Link to this definition">¶</a></dt>
+<dd><p>Send a sequence of buffers as a multipart message.</p>
+<p>The zmq.SNDMORE flag is added to all msg parts before the last.</p>
+<section id="id57">
+<h2>Parameters<a class="headerlink" href="#id57" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>msg_parts<span class="classifier">iterable</span></dt><dd><p>A sequence of objects to send as a multipart message. Each element
+can be any sendable object (Frame, bytes, buffer-providers)</p>
+</dd>
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a>.
+SNDMORE is added automatically for frames before the last.</p>
+</dd>
+<dt>copy<span class="classifier">bool, optional</span></dt><dd><p>Should the frame(s) be sent in a copying or non-copying manner.
+If copy=False, frames smaller than self.copy_threshold bytes
+will be copied anyway.</p>
+</dd>
+<dt>track<span class="classifier">bool, optional</span></dt><dd><p>Should the frame(s) be tracked for notification that ZMQ has
+finished with it (ignored if copy=True).</p>
+</dd>
+</dl>
+</section>
+<section id="id58">
+<h2>Returns<a class="headerlink" href="#id58" title="Link to this heading">¶</a></h2>
+<p>None : if copy or not track
+MessageTracker : if track and not copy</p>
+<blockquote>
+<div><p>a MessageTracker object, whose <cite>done</cite> property will
+be False until the last send is completed.</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_pyobj">
+<span class="sig-name descname"><span class="pre">send_pyobj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_pyobj" title="Link to this definition">¶</a></dt>
+<dd><p>Send a Python object as a message using pickle to serialize.</p>
+<section id="id59">
+<h2>Parameters<a class="headerlink" href="#id59" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>obj<span class="classifier">Python object</span></dt><dd><p>The Python object to send.</p>
+</dd>
+<dt>flags<span class="classifier">int</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a>.</p>
+</dd>
+<dt>protocol<span class="classifier">int</span></dt><dd><p>The pickle protocol number to use. The default is pickle.DEFAULT_PROTOCOL
+where defined, and pickle.HIGHEST_PROTOCOL elsewhere.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_serialized">
+<span class="sig-name descname"><span class="pre">send_serialized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serialize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_serialized" title="Link to this definition">¶</a></dt>
+<dd><p>Send a message with a custom serialization function.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 17.</span></p>
+</div>
+<section id="id60">
+<h2>Parameters<a class="headerlink" href="#id60" title="Link to this heading">¶</a></h2>
+<p>msg : The message to be sent. Can be any object serializable by <cite>serialize</cite>.
+serialize : callable</p>
+<blockquote>
+<div><p>The serialization function to use.
+serialize(msg) should return an iterable of sendable message frames
+(e.g. bytes objects), which will be passed to send_multipart.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a>.</p>
+</dd>
+<dt>copy<span class="classifier">bool, optional</span></dt><dd><p>Whether to copy the frames.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_string">
+<span class="sig-name descname"><span class="pre">send_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_string" title="Link to this definition">¶</a></dt>
+<dd><p>Send a Python unicode string as a message with an encoding.</p>
+<p>0MQ communicates with raw bytes, so you must encode/decode
+text (str) around 0MQ.</p>
+<section id="id61">
+<h2>Parameters<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>u<span class="classifier">str</span></dt><dd><p>The unicode string to send.</p>
+</dd>
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a>.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.send_unicode">
+<span class="sig-name descname"><span class="pre">send_unicode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="（在 Python v3.13）"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Frame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.send_unicode" title="Link to this definition">¶</a></dt>
+<dd><p>Send a Python unicode string as a message with an encoding.</p>
+<p>0MQ communicates with raw bytes, so you must encode/decode
+text (str) around 0MQ.</p>
+<section id="id62">
+<h2>Parameters<a class="headerlink" href="#id62" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>u<span class="classifier">str</span></dt><dd><p>The unicode string to send.</p>
+</dd>
+<dt>flags<span class="classifier">int, optional</span></dt><dd><p>Any valid flags for <a class="reference internal" href="../reference/api/eventlet.green.html#eventlet.green.zmq.Socket.send" title="eventlet.green.zmq.Socket.send"><code class="xref py py-func docutils literal notranslate"><span class="pre">Socket.send()</span></code></a>.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C.int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.set" title="Link to this definition">¶</a></dt>
+<dd><p>Set socket options.</p>
+<p>See the 0MQ API documentation for details on specific options.</p>
+<section id="id63">
+<h2>Parameters<a class="headerlink" href="#id63" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to set.  Available values will depend on your
+version of libzmq.  Examples include:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">UNSUBSCRIBE</span><span class="p">,</span> <span class="n">IDENTITY</span><span class="p">,</span> <span class="n">HWM</span><span class="p">,</span> <span class="n">LINGER</span><span class="p">,</span> <span class="n">FD</span>
+</pre></div>
+</div>
+</dd>
+<dt>optval<span class="classifier">int or bytes</span></dt><dd><p>The value of the option to set.</p>
+</dd>
+</dl>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>All options other than zmq.SUBSCRIBE, zmq.UNSUBSCRIBE and
+zmq.LINGER only take effect for subsequent socket bind/connects.</p>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.set_hwm">
+<span class="sig-name descname"><span class="pre">set_hwm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.set_hwm" title="Link to this definition">¶</a></dt>
+<dd><p>Set the High Water Mark.</p>
+<p>On libzmq ≥ 3, this sets both SNDHWM and RCVHWM</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>New values only take effect for subsequent socket
+bind/connects.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.set_string">
+<span class="sig-name descname"><span class="pre">set_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">optval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.set_string" title="Link to this definition">¶</a></dt>
+<dd><p>Set socket options with a unicode object.</p>
+<p>This is simply a wrapper for setsockopt to protect from encoding ambiguity.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id64">
+<h2>Parameters<a class="headerlink" href="#id64" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The name of the option to set. Can be any of: SUBSCRIBE,
+UNSUBSCRIBE, IDENTITY</p>
+</dd>
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option to set.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used, default is utf8</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.setsockopt">
+<span class="sig-name descname"><span class="pre">setsockopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">C.int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.setsockopt" title="Link to this definition">¶</a></dt>
+<dd><p>Set socket options.</p>
+<p>See the 0MQ API documentation for details on specific options.</p>
+<section id="id65">
+<h2>Parameters<a class="headerlink" href="#id65" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>option<span class="classifier">int</span></dt><dd><p>The option to set.  Available values will depend on your
+version of libzmq.  Examples include:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="n">UNSUBSCRIBE</span><span class="p">,</span> <span class="n">IDENTITY</span><span class="p">,</span> <span class="n">HWM</span><span class="p">,</span> <span class="n">LINGER</span><span class="p">,</span> <span class="n">FD</span>
+</pre></div>
+</div>
+</dd>
+<dt>optval<span class="classifier">int or bytes</span></dt><dd><p>The value of the option to set.</p>
+</dd>
+</dl>
+</section>
+<section id="id66">
+<h2>Notes<a class="headerlink" href="#id66" title="Link to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>All options other than zmq.SUBSCRIBE, zmq.UNSUBSCRIBE and
+zmq.LINGER only take effect for subsequent socket bind/connects.</p>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.setsockopt_string">
+<span class="sig-name descname"><span class="pre">setsockopt_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">optval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.setsockopt_string" title="Link to this definition">¶</a></dt>
+<dd><p>Set socket options with a unicode object.</p>
+<p>This is simply a wrapper for setsockopt to protect from encoding ambiguity.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id67">
+<h2>Parameters<a class="headerlink" href="#id67" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The name of the option to set. Can be any of: SUBSCRIBE,
+UNSUBSCRIBE, IDENTITY</p>
+</dd>
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option to set.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used, default is utf8</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.setsockopt_unicode">
+<span class="sig-name descname"><span class="pre">setsockopt_unicode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">optval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.setsockopt_unicode" title="Link to this definition">¶</a></dt>
+<dd><p>Set socket options with a unicode object.</p>
+<p>This is simply a wrapper for setsockopt to protect from encoding ambiguity.</p>
+<p>See the 0MQ documentation for details on specific options.</p>
+<section id="id68">
+<h2>Parameters<a class="headerlink" href="#id68" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>option<span class="classifier">int</span></dt><dd><p>The name of the option to set. Can be any of: SUBSCRIBE,
+UNSUBSCRIBE, IDENTITY</p>
+</dd>
+<dt>optval<span class="classifier">str</span></dt><dd><p>The value of the option to set.</p>
+</dd>
+<dt>encoding<span class="classifier">str</span></dt><dd><p>The encoding to be used, default is utf8</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.shadow">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shadow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="（在 Python v3.13）"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Socket</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_SocketType</span></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.shadow" title="Link to this definition">¶</a></dt>
+<dd><p>Shadow an existing libzmq socket</p>
+<p>address is a zmq.Socket or an integer (or FFI pointer)
+representing the address of the libzmq socket.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 14.1.</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 25: </span>Support for shadowing <cite>zmq.Socket</cite> objects,
+instead of just integer addresses.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.subscribe">
+<span class="sig-name descname"><span class="pre">subscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="（在 Python v3.13）"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.subscribe" title="Link to this definition">¶</a></dt>
+<dd><p>Subscribe to a topic</p>
+<p>Only for SUB sockets.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 15.3.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.unbind">
+<span class="sig-name descname"><span class="pre">unbind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#eventlet.green.zmq.Socket.unbind" title="Link to this definition">¶</a></dt>
+<dd><p>Unbind from an address (undoes a call to bind).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version libzmq-3.2.</span></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 13.0.</span></p>
+</div>
+<section id="id69">
+<h2>Parameters<a class="headerlink" href="#id69" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>The address string. This has the form 'protocol://interface:port',
+for example 'tcp://127.0.0.1:5555'. Protocols supported are
+tcp, udp, pgm, inproc and ipc. If the address is unicode, it is
+encoded to utf-8 first.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.underlying">
+<span class="sig-name descname"><span class="pre">underlying</span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.underlying" title="Link to this definition">¶</a></dt>
+<dd><p>The address of the underlying libzmq socket</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="eventlet.green.zmq.Socket.unsubscribe">
+<span class="sig-name descname"><span class="pre">unsubscribe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="（在 Python v3.13）"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="（在 Python v3.13）"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="（在 Python v3.13）"><span class="pre">None</span></a></span></span><a class="headerlink" href="#eventlet.green.zmq.Socket.unsubscribe" title="Link to this definition">¶</a></dt>
+<dd><p>Unsubscribe from a topic</p>
+<p>Only for SUB sockets.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 15.3.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-zmq"></span><aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id70" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id4">2</a>)</span>
+<p><a class="reference external" href="http://github.com/zeromq/pyzmq">http://github.com/zeromq/pyzmq</a></p>
+</aside>
+<aside class="footnote brackets" id="id71" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id5">2</a>)</span>
+<p><a class="reference external" href="http://www.zeromq.com">http://www.zeromq.com</a></p>
+</aside>
+<aside class="footnote brackets" id="id72" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id6">2</a>)</span>
+<p><a class="reference external" href="http://www.cython.org">http://www.cython.org</a></p>
+</aside>
+</aside>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../contribute.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">如何为 Eventlet 做出贡献</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="wsgi.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a><ul>
+<li><a class="reference internal" href="#eventlet.green.zmq.Context"><code class="docutils literal notranslate"><span class="pre">Context</span></code></a><ul>
+<li><a class="reference internal" href="#eventlet.green.zmq.Context.socket"><code class="docutils literal notranslate"><span class="pre">Context.socket()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket"><code class="docutils literal notranslate"><span class="pre">Socket</span></code></a><ul>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv"><code class="docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send"><code class="docutils literal notranslate"><span class="pre">Socket.send()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.bind"><code class="docutils literal notranslate"><span class="pre">Socket.bind()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.bind_to_random_port"><code class="docutils literal notranslate"><span class="pre">Socket.bind_to_random_port()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.close"><code class="docutils literal notranslate"><span class="pre">Socket.close()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.closed"><code class="docutils literal notranslate"><span class="pre">Socket.closed</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.connect"><code class="docutils literal notranslate"><span class="pre">Socket.connect()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.disable_monitor"><code class="docutils literal notranslate"><span class="pre">Socket.disable_monitor()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.disconnect"><code class="docutils literal notranslate"><span class="pre">Socket.disconnect()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.fileno"><code class="docutils literal notranslate"><span class="pre">Socket.fileno()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.get"><code class="docutils literal notranslate"><span class="pre">Socket.get()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.get_hwm"><code class="docutils literal notranslate"><span class="pre">Socket.get_hwm()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.get_monitor_socket"><code class="docutils literal notranslate"><span class="pre">Socket.get_monitor_socket()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.get_string"><code class="docutils literal notranslate"><span class="pre">Socket.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.getsockopt"><code class="docutils literal notranslate"><span class="pre">Socket.getsockopt()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.getsockopt_string"><code class="docutils literal notranslate"><span class="pre">Socket.getsockopt_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.getsockopt_unicode"><code class="docutils literal notranslate"><span class="pre">Socket.getsockopt_unicode()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.hwm"><code class="docutils literal notranslate"><span class="pre">Socket.hwm</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.join"><code class="docutils literal notranslate"><span class="pre">Socket.join()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.leave"><code class="docutils literal notranslate"><span class="pre">Socket.leave()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.monitor"><code class="docutils literal notranslate"><span class="pre">Socket.monitor()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.poll"><code class="docutils literal notranslate"><span class="pre">Socket.poll()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">Socket.recv()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_json"><code class="docutils literal notranslate"><span class="pre">Socket.recv_json()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_multipart"><code class="docutils literal notranslate"><span class="pre">Socket.recv_multipart()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_pyobj"><code class="docutils literal notranslate"><span class="pre">Socket.recv_pyobj()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_serialized"><code class="docutils literal notranslate"><span class="pre">Socket.recv_serialized()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_string"><code class="docutils literal notranslate"><span class="pre">Socket.recv_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.recv_unicode"><code class="docutils literal notranslate"><span class="pre">Socket.recv_unicode()</span></code></a></li>
+<li><a class="reference internal" href="#id52"><code class="docutils literal notranslate"><span class="pre">Socket.send()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_json"><code class="docutils literal notranslate"><span class="pre">Socket.send_json()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_multipart"><code class="docutils literal notranslate"><span class="pre">Socket.send_multipart()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_pyobj"><code class="docutils literal notranslate"><span class="pre">Socket.send_pyobj()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_serialized"><code class="docutils literal notranslate"><span class="pre">Socket.send_serialized()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_string"><code class="docutils literal notranslate"><span class="pre">Socket.send_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.send_unicode"><code class="docutils literal notranslate"><span class="pre">Socket.send_unicode()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.set"><code class="docutils literal notranslate"><span class="pre">Socket.set()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.set_hwm"><code class="docutils literal notranslate"><span class="pre">Socket.set_hwm()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.set_string"><code class="docutils literal notranslate"><span class="pre">Socket.set_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.setsockopt"><code class="docutils literal notranslate"><span class="pre">Socket.setsockopt()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.setsockopt_string"><code class="docutils literal notranslate"><span class="pre">Socket.setsockopt_string()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.setsockopt_unicode"><code class="docutils literal notranslate"><span class="pre">Socket.setsockopt_unicode()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.shadow"><code class="docutils literal notranslate"><span class="pre">Socket.shadow()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.subscribe"><code class="docutils literal notranslate"><span class="pre">Socket.subscribe()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.unbind"><code class="docutils literal notranslate"><span class="pre">Socket.unbind()</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.underlying"><code class="docutils literal notranslate"><span class="pre">Socket.underlying</span></code></a></li>
+<li><a class="reference internal" href="#eventlet.green.zmq.Socket.unsubscribe"><code class="docutils literal notranslate"><span class="pre">Socket.unsubscribe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/tabs.js?v=3ee01567"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>

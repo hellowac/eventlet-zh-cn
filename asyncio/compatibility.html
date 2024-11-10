@@ -1,0 +1,625 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="索引" href="../genindex.html" /><link rel="search" title="搜索" href="../search.html" /><link rel="next" title="迁移出 Eventlet" href="migration.html" /><link rel="prev" title="Eventlet 中的 Asyncio" href="index.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>eventlet 中的 Asyncio 兼容性 - Eventlet 0.0.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Eventlet 0.0.0 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Eventlet 0.0.0 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="搜索">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Eventlet 中的 Asyncio</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Eventlet 中的 Asyncio</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">eventlet 中的 Asyncio 兼容性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">迁移出 Eventlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/awaitlet.html">Awaitlet 作为替代方案</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/deprecation.html">管理您的弃用内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/glossary.html">术语</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../basic_usage.html">基本用法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design_patterns.html">设计模式</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../patching.html">绿化世界</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">示例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ssl.html">SSL 与 Eventlet 的结合使用</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../threading.html">线程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zeromq.html">Zeromq</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hubs.html">理解 Eventlet Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">环境变量</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">模块参考</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of 模块参考</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/asyncio.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">asyncio</span></code> - 集成 <code class="docutils literal notranslate"><span class="pre">asyncio</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/backdoor.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">backdoor</span></code>——正在运行的进程中的 Python 交互式解释器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/corolocal.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">corolocal</span></code> -- 协程本地存储</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dagpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dagpool</span></code> -- 依赖驱动的 Greenthreads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/dagpool.html#id11">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/debug.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">debug</span></code> -- Eventlet 的调试工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/db_pool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">db_pool</span></code> -- DBAPI 2 数据库连接池connection pooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">event</span></code> -- 跨绿色线程原语</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/greenpool.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenpool</span></code> -- 绿色线程池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/greenthread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">greenthread</span></code> -- 绿色线程实现</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/pools.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pools</span></code> - 通用资源池</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> -- 队列类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/semaphore.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">semaphore</span></code> -- 信号量类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/timeout.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">timeout</span></code> -- 通用超时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/websocket.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">websocket</span></code> -- Websocket 服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/wsgi.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wsgi</span></code> -- WSGI 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/zmq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eventlet.green.zmq</span></code> -- ØMQ support</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">如何为 Eventlet 做出贡献</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">测试 Eventlet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance.html">维护流程</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/blob/sync-docs/cn_docs/source/asyncio/compatibility.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/hellowac/eventlet-zh-cn/edit/sync-docs/cn_docs/source/asyncio/compatibility.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="eventlet-asyncio">
+<span id="asyncio-compatibility"></span><h1>eventlet 中的 Asyncio 兼容性<a class="headerlink" href="#eventlet-asyncio" title="Link to this heading">¶</a></h1>
+<p><strong>Asyncio compatibility in eventlet</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">中文</label><div class="tab-content docutils container">
+<p>应该能够做到：</p>
+<ul class="simple">
+<li><p>在同一个线程中运行 eventlet 和 asyncio。</p></li>
+<li><p>允许 asyncio 和 eventlet 进行交互：eventlet 代码可以使用基于 asyncio 的库，基于 asyncio 的代码可以获取来自 eventlet 的结果。</p></li>
+</ul>
+<p>如果这个可行，它将允许在项目内部和跨项目逐步从 eventlet 迁移到 asyncio：</p>
+<ol class="arabic simple">
+<li><p>在 OpenStack 库内部，代码可以是 asyncio 和 eventlet 代码的混合体。这意味着迁移不必在一次操作中完成，无论是在库内部还是在依赖它们的应用程序中。</p></li>
+<li><p>即使一个 OpenStack 库完全迁移到 asyncio，它仍然可以被任何仍在运行 eventlet 的程序使用。</p></li>
+</ol>
+</div>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">英文</label><div class="tab-content docutils container">
+<p>It should be possible to:</p>
+<ul class="simple">
+<li><p>Run eventlet and asyncio in the same thread.</p></li>
+<li><p>Allow asyncio and eventlet to interact: eventlet code can use asyncio-based libraries, asyncio-based code can get results out of eventlet.</p></li>
+</ul>
+<p>If this works, it would allow migrating from eventlet to asyncio in a gradual manner both within and across projects:</p>
+<ol class="arabic simple">
+<li><p>Within an OpenStack library, code could be a mixture of asyncio and eventlet code.
+This means migration doesn't have to be done in one stop, neither in libraries nor in the applications that depend on them.</p></li>
+<li><p>Even when an OpenStack library fully migrates to asyncio, it will still be usable by anything that is still running on eventlet.</p></li>
+</ol>
+</div>
+</div>
+<section id="id1">
+<h2>现有技术<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p><strong>Prior art</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">中文</label><div class="tab-content docutils container">
+<ul class="simple">
+<li><p>Gevent 与 eventlet 有类似的模型。</p></li>
+</ul>
+<p>它与 asyncio 之间有一个集成，遵循下面提出的模型: <a class="reference external" href="https://pypi.org/project/asyncio-gevent/">https://pypi.org/project/asyncio-gevent/</a>
+* Twisted 可以在 asyncio 事件循环之上运行。
+另外，它包括用于将其 <cite>Deferred</cite> 对象（类似于 JavaScript Promise）映射到 Python 3 中较新版本引入的 async/await 模型的工具，反过来，它也添加了将 async/await 函数转换为 <cite>Deferred</cite> 的支持。
+在 eventlet 上下文中，<cite>GreenThread</cite> 需要类似的集成方式来与 Twisted 的 <cite>Deferred</cite> 兼容。</p>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">英文</label><div class="tab-content docutils container">
+<ul class="simple">
+<li><p>Gevent has a similar model to eventlet.
+There exists an integration between gevent and asyncio that follows model proposed below: <a class="reference external" href="https://pypi.org/project/asyncio-gevent/">https://pypi.org/project/asyncio-gevent/</a></p></li>
+<li><p>Twisted can run on top of the asyncio event loop.
+Separately, it includes utilities for mapping its <cite>Deferred</cite> objects (similar to a JavaScript Promise) to the async/await model introduced in newer versions in Python 3, and in the opposite direction it added support for turning async/await functions into <cite>Deferred`s.
+In an eventlet context, `GreenThread</cite> would need a similar former of integration to Twisted's <cite>Deferred</cite>.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="asyncio-eventlet-interoperability">
+<h2>第 1 部分：实现 asyncio/eventlet 互操作性interoperability<a class="headerlink" href="#asyncio-eventlet-interoperability" title="Link to this heading">¶</a></h2>
+<p><a href="#id2"><span class="problematic" id="id3">**</span></a>Part 1: Implementing asyncio/eventlet **</p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">中文</label><div class="tab-content docutils container">
+<p>集成 eventlet 和 asyncio 涉及三个不同的部分</p>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">英文</label><div class="tab-content docutils container">
+<p>There are three different parts involved in integrating eventlet and asyncio for purposes</p>
+</div>
+</div>
+<section id="asyncio-hub">
+<h3>1. 创建在 asyncio 上运行的 hub<a class="headerlink" href="#asyncio-hub" title="Link to this heading">¶</a></h3>
+<p><strong>1. Create a hub that runs on asyncio</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--1">中文</label><div class="tab-content docutils container">
+<p>与许多网络框架一样，eventlet 具有可插入事件循环，在这种情况下称为“集线器”。通常，集线器会包装系统 API，如 <cite>select()</cite> 和 <cite>epoll()</cite>，但也曾经有一个在 Twisted 上运行的集线器。
+创建在 asyncio 事件循环之上运行的集线器应该相当简单。</p>
+<p>完成此操作后，eventlet 和 asyncio 代码可以在同一进程和同一线程中运行，但它们之间仍然难以通信。
+后一个要求需要额外的工作，如下两项所述。</p>
+</div>
+<input class="tab-input" id="tab-set--3-input--2" name="tab-set--3" type="radio"><label class="tab-label" for="tab-set--3-input--2">英文</label><div class="tab-content docutils container">
+<p>Like many networking frameworks, eventlet has pluggable event loops, in this case called a &quot;hub&quot;. Typically hubs wrap system APIs like <cite>select()</cite> and <cite>epoll()</cite>, but there also used to be a hub that ran on Twisted.
+Creating a hub that runs on top of the asyncio event loop should be fairly straightforward.</p>
+<p>Once this is done, eventlet and asyncio code can run in the same process and the same thread, but they would still have difficulties talking to each other.
+This latter requirement requires additional work, as covered by the next two items.</p>
+</div>
+</div>
+</section>
+<section id="eventlet-async-def-eventlet">
+<h3>2. 从 eventlet 调用 <cite>async def</cite> 函数eventlet<a class="headerlink" href="#eventlet-async-def-eventlet" title="Link to this heading">¶</a></h3>
+<p><a href="#id4"><span class="problematic" id="id5">**</span></a>2. Calling <cite>async def</cite> functions from **</p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--4-input--1" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--1">中文</label><div class="tab-content docutils container">
+<p>目标是允许类似这样的操作：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">aiohttp</span>
+<span class="kn">from</span> <span class="nn">eventlet_asyncio</span> <span class="kn">import</span> <span class="n">future_to_greenlet</span>  <span class="c1"># hypothetical API</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_url_body</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">eventlet_code</span><span class="p">():</span>
+    <span class="n">green_thread</span> <span class="o">=</span> <span class="n">future_to_greenlet</span><span class="p">(</span><span class="n">get_url_body</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">green_thread</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>代码大概类似于 <a class="reference external" href="https://github.com/gfmio/asyncio-gevent/blob/main/asyncio_gevent/future_to_greenlet.py">https://github.com/gfmio/asyncio-gevent/blob/main/asyncio_gevent/future_to_greenlet.py</a></p>
+</div>
+<input class="tab-input" id="tab-set--4-input--2" name="tab-set--4" type="radio"><label class="tab-label" for="tab-set--4-input--2">英文</label><div class="tab-content docutils container">
+<p>The goal is to allow something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">aiohttp</span>
+<span class="kn">from</span> <span class="nn">eventlet_asyncio</span> <span class="kn">import</span> <span class="n">future_to_greenlet</span>  <span class="c1"># hypothetical API</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_url_body</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">eventlet_code</span><span class="p">():</span>
+    <span class="n">green_thread</span> <span class="o">=</span> <span class="n">future_to_greenlet</span><span class="p">(</span><span class="n">get_url_body</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">green_thread</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The code would presumably be similar to <a class="reference external" href="https://github.com/gfmio/asyncio-gevent/blob/main/asyncio_gevent/future_to_greenlet.py">https://github.com/gfmio/asyncio-gevent/blob/main/asyncio_gevent/future_to_greenlet.py</a></p>
+</div>
+</div>
+</section>
+<section id="asyncio-eventlet">
+<h3>3. 从 asyncio 调用 eventlet 代码<a class="headerlink" href="#asyncio-eventlet" title="Link to this heading">¶</a></h3>
+<p><strong>3. Calling eventlet code from asyncio</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--5-input--1" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--1">中文</label><div class="tab-content docutils container">
+<p>目标是允许这样的事情：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">spawn</span>
+<span class="kn">from</span> <span class="nn">eventlet_asyncio</span> <span class="kn">import</span> <span class="n">greenlet_to_future</span>  <span class="c1"># hypothetical API</span>
+
+<span class="k">def</span> <span class="nf">get_url_body</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="c1"># Looks blocking, but actually isn&#39;t</span>
+    <span class="k">return</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># This would likely be common pattern, so could be implemented as decorator...</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">asyncio_code</span><span class="p">():</span>
+    <span class="n">greenlet</span> <span class="o">=</span> <span class="n">eventlet</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">get_url_body</span><span class="p">,</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">greenlet_to_future</span><span class="p">(</span><span class="n">greenlet</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">future</span>
+</pre></div>
+</div>
+<p>该代码大概类似于 <a class="reference external" href="https://github.com/gfmio/asyncio-gev​​ent/blob/main/asyncio_gevent/future_to_greenlet.py">https://github.com/gfmio/asyncio-gev​​ent/blob/main/asyncio_gevent/future_to_greenlet.py</a></p>
+</div>
+<input class="tab-input" id="tab-set--5-input--2" name="tab-set--5" type="radio"><label class="tab-label" for="tab-set--5-input--2">英文</label><div class="tab-content docutils container">
+<p>The goal is to allow something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">eventlet</span> <span class="kn">import</span> <span class="n">spawn</span>
+<span class="kn">from</span> <span class="nn">eventlet_asyncio</span> <span class="kn">import</span> <span class="n">greenlet_to_future</span>  <span class="c1"># hypothetical API</span>
+
+<span class="k">def</span> <span class="nf">get_url_body</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="c1"># Looks blocking, but actually isn&#39;t</span>
+    <span class="k">return</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># This would likely be common pattern, so could be implemented as decorator...</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">asyncio_code</span><span class="p">():</span>
+    <span class="n">greenlet</span> <span class="o">=</span> <span class="n">eventlet</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">get_url_body</span><span class="p">,</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
+    <span class="n">future</span> <span class="o">=</span> <span class="n">greenlet_to_future</span><span class="p">(</span><span class="n">greenlet</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">future</span>
+</pre></div>
+</div>
+<p>The code would presumably be similar to <a class="reference external" href="https://github.com/gfmio/asyncio-gev​​ent/blob/main/asyncio_gevent/future_to_greenlet.py">https://github.com/gfmio/asyncio-gev​​ent/blob/main/asyncio_gevent/future_to_greenlet.py</a></p>
+</div>
+</div>
+</section>
+<section id="id6">
+<h3>4. 限制和潜在的意外行为<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p><strong>4. Limitations and potential unexpected behavior</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--6-input--1" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--1">中文</label><div class="tab-content docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">concurrent.futures.thread</span></code> 只是使用普通线程，而不是 Eventlet 的特殊线程。
+类似地， <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread">asyncio.to_thread()</a> 特别要求常规阻塞代码，它无法与 Eventlet 代码正确配合使用。</p>
+<p>Asyncio hub 不支持多个读取器。</p>
+</div>
+<input class="tab-input" id="tab-set--6-input--2" name="tab-set--6" type="radio"><label class="tab-label" for="tab-set--6-input--2">英文</label><div class="tab-content docutils container">
+<p><code class="docutils literal notranslate"><span class="pre">concurrent.futures.thread</span></code> just uses normal threads, not Eventlet's special threads.
+Similarly, <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread">asyncio.to_thread()</a>
+specifically requires regular blocking code, it won't work correctly with Eventlet code.</p>
+<p>Multiple readers are not supported by the Asyncio hub.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="level">
+<h2>第 2 部分: 端口在技术层面上的工作原理level<a class="headerlink" href="#level" title="Link to this heading">¶</a></h2>
+<p><strong>Part 2: How a port would work on a technical</strong></p>
+</section>
+<section id="id8">
+<h2>移植库<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<p><strong>Porting a library</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--7-input--1" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--1">中文</label><div class="tab-content docutils container">
+<ol class="arabic">
+<li><p>基于 eventlet 的 API 的使用将被 asyncio API 替代。
+例如，<cite>urllib</cite> 或 <cite>requests</cite> 可能会被 <a class="reference external" href="https://docs.aiohttp.org/en/stable/">aiohttp</a> 替代。
+上述的互操作性可以确保它继续与基于 eventlet 的 API 一起工作。</p>
+<p><a class="reference external" href="https://github.com/timofurrer/awesome-asyncio">awesome-asyncio</a> GitHub 仓库提供了一个精选的 Python asyncio 框架、库、软件和资源列表。不要犹豫，去看看它。你可能会发现一些与 asyncio 兼容的候选库，允许你替换一些当前的底层库。</p>
+</li>
+<li><p>随着时间的推移，API 需要迁移为 <cite>async</cite> 函数，但在过渡阶段，仍然可以使用标准的 <cite>def</cite>，再次使用上述的互操作性层。</p></li>
+<li><p>最终，所有“阻塞”API 被移除，此时所有内容可以切换为 <cite>async def</cite> 和 <cite>await</cite>，包括外部 API，库将不再依赖于 eventlet。</p></li>
+</ol>
+</div>
+<input class="tab-input" id="tab-set--7-input--2" name="tab-set--7" type="radio"><label class="tab-label" for="tab-set--7-input--2">英文</label><div class="tab-content docutils container">
+<blockquote>
+<div><ol class="arabic">
+<li><p>Usage of eventlet-based APIs would be replaced with usage of asyncio APIs.
+For example, <cite>urllib</cite> or <cite>requests</cite> might be replaced with <a class="reference external" href="https://docs.aiohttp.org/en/stable/">aiohttp</a>.
+The interoperability above can be used to make sure this continues to work with eventlet-based APIs.</p>
+<p>The <a class="reference external" href="https://github.com/timofurrer/awesome-asyncio">awesome-asyncio</a> github repository propose a curated list of awesome
+Python asyncio frameworks, libraries, software and resources. Do not hesitate to take a look at it. You may find
+candidates compatible with asyncio that can allow you to replace some of your actual underlying libraries.</p>
+</li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Over time, APIs would need be migrated to be <cite>async</cite> function, but in the intermediate time frame a standard <cite>def</cite> can still be used, again using the interoperability layer above.</p></li>
+<li><p>Eventually all &quot;blocking&quot; APIs have been removed, at which point everything can be switched to <cite>async def</cite> and <cite>await</cite>, including external API, and the library will no longer depend on eventlet.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="id11">
+<h2>移植应用程序<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<p><strong>Porting an application</strong></p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--8-input--1" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--1">中文</label><div class="tab-content docutils container">
+<p>在启动 eventlet 之前，应用程序需要安装 asyncio hub。
+除此之外，迁移与库的迁移是一样的。</p>
+<p>一旦所有库都完全基于 asyncio，eventlet 的使用就可以被移除，改为运行 asyncio 循环。</p>
+</div>
+<input class="tab-input" id="tab-set--8-input--2" name="tab-set--8" type="radio"><label class="tab-label" for="tab-set--8-input--2">英文</label><div class="tab-content docutils container">
+<p>An application would need to install the asyncio hub before kicking off eventlet.
+Beyond that porting would be the same as a library.</p>
+<p>Once all libraries are purely asyncio-based, eventlet usage can be removed and an asyncio loop run instead.</p>
+</div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="migration.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">迁移出 Eventlet</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Eventlet 中的 Asyncio</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2005-2024, Eventlet Contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/hellowac/eventlet-zh-cn" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">eventlet 中的 Asyncio 兼容性</a><ul>
+<li><a class="reference internal" href="#id1">现有技术</a></li>
+<li><a class="reference internal" href="#asyncio-eventlet-interoperability">第 1 部分：实现 asyncio/eventlet 互操作性interoperability</a><ul>
+<li><a class="reference internal" href="#asyncio-hub">1. 创建在 asyncio 上运行的 hub</a></li>
+<li><a class="reference internal" href="#eventlet-async-def-eventlet">2. 从 eventlet 调用 <cite>async def</cite> 函数eventlet</a></li>
+<li><a class="reference internal" href="#asyncio-eventlet">3. 从 asyncio 调用 eventlet 代码</a></li>
+<li><a class="reference internal" href="#id6">4. 限制和潜在的意外行为</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#level">第 2 部分: 端口在技术层面上的工作原理level</a></li>
+<li><a class="reference internal" href="#id8">移植库</a></li>
+<li><a class="reference internal" href="#id11">移植应用程序</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=48c42fc6"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/tabs.js?v=3ee01567"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=beaddf03"></script>
+    </body>
+</html>
